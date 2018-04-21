@@ -11,6 +11,7 @@ use yii\widgets\Breadcrumbs;
 use app\assets\AppAsset;
 
 AppAsset::register($this);
+Yii::$app->name = "SolSale"
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -47,7 +48,7 @@ AppAsset::register($this);
                 '<li>'
                 . Html::beginForm(['/site/logout'], 'post')
                 . Html::submitButton(
-                    'Logout (' . Yii::$app->user->identity->username . ')',
+                    'Logout (' . Yii::$app->user->identity->login . ')',
                     ['class' => 'btn btn-link logout']
                 )
                 . Html::endForm()
@@ -59,9 +60,11 @@ AppAsset::register($this);
     ?>
 
     <div class="container">
+
         <?= Breadcrumbs::widget([
+            'homeLink' => ['label' => 'Солярий', 'url' => '/'],
             'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-        ]) ?>
+        ])  ?>
         <?= Alert::widget() ?>
         <?= $content ?>
     </div>

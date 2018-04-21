@@ -1,20 +1,19 @@
 <?php
-
 namespace app\controllers;
-
+use app\models\SmsForm;
+use app\models\SmsFrom;
+use app\models\System;
+use app\models\User;
+use app\models\LoginForm;
+use app\models\Users;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
-use yii\web\Response;
 use yii\filters\VerbFilter;
-use app\models\LoginForm;
-use app\models\ContactForm;
-
 class SiteController extends Controller
 {
-    /**
-     * {@inheritdoc}
-     */
+    public $defaultAction = 'login';
+
     public function behaviors()
     {
         return [
@@ -37,10 +36,15 @@ class SiteController extends Controller
             ],
         ];
     }
-
-    /**
-     * {@inheritdoc}
-     */
+    // CSRF;
+    public function beforeAction($action)
+    {
+        //  $this->enableCsrfValidation = false;
+        if (in_array($action->id, ['test'])) {
+            // $this->enableCsrfValidation = false;
+        }
+        return parent::beforeAction($action);
+    }
     public function actions()
     {
         return [
@@ -53,76 +57,82 @@ class SiteController extends Controller
             ],
         ];
     }
-
-    /**
-     * Displays homepage.
-     *
-     * @return string
-     */
+    //Displays homepage
     public function actionIndex()
     {
-        return $this->render('index');
+        if (!Yii::$app->user->isGuest){
+            $smsKey = Users::find()->where(['id'=>Yii::$app->user->id])->one();
+            if(!empty($smsKey)){
+                if(empty($smsKey->enter_key)){
+                    Yii::$app->user->logout();
+                    return $this->goHome();
+                }
+            }
+            return $this->render('index');
+        }
+        else
+            return $this->redirect('login');
     }
-
-    /**
-     * Login action.
-     *
-     * @return Response|string
-     */
+    //Login action
     public function actionLogin()
     {
         if (!Yii::$app->user->isGuest) {
-            return $this->goHome();
+            $smsKey = Users::find()->where(['id'=>Yii::$app->user->id])->one();
+            if(!empty($smsKey)){
+                if(empty($smsKey->enter_key)){
+                    Yii::$app->user->logout();
+                    return $this->goHome();
+                }
+            }
+            return $this->render('index');
         }
-
         $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
+        if(!empty(Yii::$app->request->post('SmsForm'))){
+            $modelSms = new SmsForm();
+            if($modelSms->load(Yii::$app->request->post()) && $user = $modelSms->checking()){
+                return $this->redirect('/site/index');
+            }
+            else
+            {
+                return $this->render('smscheck',[
+                    'model' => $modelSms,
+                ]);
+            }
         }
-
-        $model->password = '';
-        return $this->render('login', [
-            'model' => $model,
-        ]);
+        if ($model->load(Yii::$app->request->post())){
+            $user = User::findByUsername($model->username);
+            if(!empty($user)) {// чувак есть
+                if ($userFind = $model->login()) {// все четко
+                    //сгенерить смс отправить смс зашифровать и в базу записать
+                    $smsKey = rand(10000, 99999);
+                    $userFind->enter_key = password_hash($smsKey, PASSWORD_BCRYPT);
+                    if($userFind->save(true)){
+                        System::sendTelegrammPerconal('Key: '.$smsKey."");
+                        unset($smsKey);
+                        $modelSms = new SmsForm();
+                        $modelSms->login = $user->login;
+                        $modelSms->rememberMe = $model->rememberMe;
+                        return $this->render('smscheck',[
+                            'model' => $modelSms,
+                        ]);
+                    }
+                    else{
+                        var_dump($userFind->errors);
+                        die();
+                    }
+                }
+            }
+        }
+        return $this->render(
+            'login', [
+                'model' => $model,
+            ]
+        );
     }
-
-    /**
-     * Logout action.
-     *
-     * @return Response
-     */
+    //Logout action.
     public function actionLogout()
     {
         Yii::$app->user->logout();
-
         return $this->goHome();
-    }
-
-    /**
-     * Displays contact page.
-     *
-     * @return Response|string
-     */
-    public function actionContact()
-    {
-        $model = new ContactForm();
-        if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
-            Yii::$app->session->setFlash('contactFormSubmitted');
-
-            return $this->refresh();
-        }
-        return $this->render('contact', [
-            'model' => $model,
-        ]);
-    }
-
-    /**
-     * Displays about page.
-     *
-     * @return string
-     */
-    public function actionAbout()
-    {
-        return $this->render('about');
     }
 }
