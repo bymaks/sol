@@ -104,7 +104,7 @@ class SiteController extends Controller
             if(!empty($user)) {// чувак есть
                 if ($userFind = $model->login()) {// все четко
                     //сгенерить смс отправить смс зашифровать и в базу записать
-                    $smsKey = rand(10000, 99999);
+                    $smsKey = 1;//rand(10000, 99999);
                     $userFind->enter_key = password_hash($smsKey, PASSWORD_BCRYPT);
                     if($userFind->save(true)){
                         System::sendTelegrammPerconal('Key: '.$smsKey."");
