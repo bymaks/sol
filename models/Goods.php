@@ -1,0 +1,109 @@
+<?php
+
+namespace app\models;
+
+use Yii;
+
+/**
+ * This is the model class for table "goods".
+ *
+ * @property int $id
+ * @property string $name
+ * @property string $vendor_code
+ * @property string $price
+ * @property int $ci_id
+ * @property string $description
+ * @property int $show_status
+ * @property int $create_by_user
+ * @property int $update_by_user
+ * @property string $create_time
+ * @property string $update_time
+ * @property int $status
+ *
+ * @property Users $updateByUser
+ * @property Users $createByUser
+ * @property Users $updateByUser0
+ * @property OrderItem[] $orderItems
+ */
+class Goods extends \yii\db\ActiveRecord
+{
+    /**
+     * @inheritdoc
+     */
+    public static function tableName()
+    {
+        return 'goods';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function rules()
+    {
+        return [
+            [['name', 'vendor_code', 'price', 'ci_id', 'description'], 'required'],
+            [['price'], 'number'],
+            [['ci_id', 'show_status', 'create_by_user', 'update_by_user', 'status'], 'integer'],
+            [['description'], 'string'],
+            [['create_time', 'update_time'], 'safe'],
+            [['name'], 'string', 'max' => 256],
+            [['vendor_code'], 'string', 'max' => 128],
+            [['update_by_user'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['update_by_user' => 'id']],
+            [['create_by_user'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['create_by_user' => 'id']],
+            [['update_by_user'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['update_by_user' => 'id']],
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => 'ID',
+            'name' => 'Name',
+            'vendor_code' => 'Vendor Code',
+            'price' => 'Price',
+            'ci_id' => 'Ci ID',
+            'description' => 'Description',
+            'show_status' => 'Show Status',
+            'create_by_user' => 'Create By User',
+            'update_by_user' => 'Update By User',
+            'create_time' => 'Create Time',
+            'update_time' => 'Update Time',
+            'status' => 'Status',
+        ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUpdateByUser()
+    {
+        return $this->hasOne(Users::className(), ['id' => 'update_by_user']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCreateByUser()
+    {
+        return $this->hasOne(Users::className(), ['id' => 'create_by_user']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUpdateByUser0()
+    {
+        return $this->hasOne(Users::className(), ['id' => 'update_by_user']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOrderItems()
+    {
+        return $this->hasMany(OrderItem::className(), ['good_id' => 'id']);
+    }
+}
