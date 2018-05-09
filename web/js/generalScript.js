@@ -29,3 +29,38 @@ function alert_messages (text,status,options) {
     },5000);
     return false;
 }
+
+// Поиск;
+$(document).on('click','.js-button-search',function () {
+    var search = $('input.js-value-search').val();
+    console.log(search);
+    console.log('++');
+    window_global('#modal-global','ajax/search-input',{'search':true, 'value':search},'Поиск сертивикат');
+});
+
+// Модальная окно (ГЛОБАЛЬНЫЙ МОЖНО ВЕЗДЕ ИСПОЛЬЗОВАТЬ);
+function window_global(name,url,objPost,title) {
+    var modalContainer = $(name);
+    // Размер окно;
+    modalContainer.modal('show');
+    if(title){
+        modalContainer.find(".modal-header h4").text(title);
+    }
+    //Если нет объекта по умол. пустой;
+    if(!objPost) objPost = {};
+    modalContainer.find('.modal-body').html('');
+    $.ajax({
+        url: '/' + url,
+        type: "POST",
+        data: objPost,
+        async: false,
+        success: function (data) {
+            modalContainer.find('.modal-body').html(data);
+            modalContainer.modal('show');
+        }
+    }).done(function(data) {
+        //
+    });
+
+    return false;
+}
