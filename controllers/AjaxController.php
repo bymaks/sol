@@ -8,14 +8,8 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use app\models\GoodsStok;
 use app\models\GoodsStokSearch;
-use Yii;
-use app\models\Goods;
-use app\models\GoodsSearch;
 use yii\filters\AccessControl;
 use yii\helpers\Json;
-use yii\web\Controller;
-use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 class AjaxController  extends Controller
 {
