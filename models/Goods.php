@@ -53,6 +53,7 @@ class Goods extends \yii\db\ActiveRecord
             [['create_by_user'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['create_by_user' => 'id']],
             [['update_by_user'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['update_by_user' => 'id']],
             [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => GoodsCategory::className(), 'targetAttribute' => ['category_id' => 'id']],
+            [['ci_id'], 'exist', 'skipOnError' => true, 'targetClass' => GoodsCi::className(), 'targetAttribute' => ['ci_id' => 'id']],
         ];
     }
 
@@ -104,6 +105,11 @@ class Goods extends \yii\db\ActiveRecord
     public function getOrderItems()
     {
         return $this->hasMany(OrderItem::className(), ['good_id' => 'id']);
+    }
+
+    public function getCi()
+    {
+        return $this->hasOne(GoodsCi::className(), ['id' => 'ci_id']);
     }
 
     public function afterSave($insert, $changedAttributes)
