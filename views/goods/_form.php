@@ -17,6 +17,8 @@ use skeeks\yii2\ckeditor\CKEditorPresets;
 
     <?= $form->field($model, 'price')->textInput(['maxlength' => true]) ?>
 
+    <?= $form->field($model, 'ci_id')->dropdownList(\yii\helpers\ArrayHelper::map(\app\models\GoodsCategory::find()->where(['status'=>1])->all(), 'id', 'name'))->label('Категория') ?>
+
     <?= $form->field($model, 'ci_id')->dropdownList(\yii\helpers\ArrayHelper::map(\app\models\GoodsCi::find()->where(['status'=>1])->all(), 'id', 'name'))->label('ЕМ') ?>
 
     <?= $form->field($model, 'description')->widget(CKEditorWidget::className(), [

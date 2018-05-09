@@ -39,6 +39,21 @@ $this->params['breadcrumbs'][] = $this->title;
             'format'=>'html',
         ],
         [
+            'attribute' => 'category_id',
+            'label'=>'Категория товара',
+            'width'=>'30%',
+            'value' => function($model){
+                return $model->category->name;
+            },
+            'filterType'=>GridView::FILTER_SELECT2,
+            'filter'=>\yii\helpers\ArrayHelper::map(\app\models\GoodsCategory::find()->where(['status'=>1])->all(), 'id', 'name'),
+            'filterWidgetOptions'=>[
+                'pluginOptions'=>['allowClear'=>true],
+            ],
+            'filterInputOptions'=>['placeholder'=>'Категория'],
+            'format'=>'html',
+        ],
+        [
             'attribute' => 'price',
             'width'=>'5%',
             'value' => function($model){
