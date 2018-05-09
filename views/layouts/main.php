@@ -9,7 +9,8 @@ use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use yii\widgets\Breadcrumbs;
 use app\assets\AppAsset;
-
+use yii\bootstrap\ButtonDropdown;
+use yii\bootstrap\Modal;
 AppAsset::register($this);
 Yii::$app->name = "SolSale"
 ?>
@@ -26,6 +27,13 @@ Yii::$app->name = "SolSale"
 </head>
 <body>
 <?php $this->beginBody() ?>
+<!--Modal Оплата-->
+<?php Modal::begin(['header' => '<h4></h4>',
+    'closeButton' => ['tag' => 'button', 'label' => '&times;'],
+    'id' => 'modal-global',
+    // 'size'=>'modal-sm',
+]);?>
+<?php Modal::end(); ?>
 <!--Ппанель уведомления -->
 <div class="alert alert__fix js-alert-close">
     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
@@ -42,29 +50,72 @@ Yii::$app->name = "SolSale"
             'class' => 'navbar-inverse navbar-fixed-top',
         ],
     ]);
-    echo Nav::widget([
-        'options' => ['class' => 'navbar-nav navbar-right'],
-
-        'items' => [
-
-            ['label' => 'Home', 'url' => ['/site/index']],
-            ['label' => 'About', 'url' => ['/site/about']],
-            ['label' => 'Contact', 'url' => ['/site/contact']],
-
-            Yii::$app->user->isGuest ? (
-                ['label' => 'Login', 'url' => ['/site/login']]
-            ) : (
-                '<li>'
-                . Html::beginForm(['/site/logout'], 'post')
-                . Html::submitButton(
-                    'Logout (' . Yii::$app->user->identity->login . ')',
-                    ['class' => 'btn btn-link logout']
-                )
-                . Html::endForm()
-                . '</li>'
-            )
+    ?>
+    <div class="col-sm-4 col-md-push-2 search-input">
+        <div class="input-group">
+            <input type="text" class="form-control js-value-search" placeholder="Введите номер сертификата">
+            <span class="input-group-btn"><button class="btn btn-default js-button-search" type="button">Поиск</button></span>
+        </div><!-- /input-group -->
+    </div><!-- /.col-lg-6 -->
+    <?php
+    echo '<div class="pull-right">';
+    echo ButtonDropdown::widget([
+        'label' => 'Меню',
+        'options' => [
+            'class' => 'btn-lg btn-link nav navbar-nav',
+            'style' => 'margin:5px'
         ],
+        'dropdown' => [
+           // 'options' => [''],
+            'items' => [
+
+                ['label' => 'Home', 'url' => ['/site/index']],
+                ['label' => 'About', 'url' => ['/site/about']],
+                ['label' => 'Contact', 'url' => ['/site/contact']],
+
+                Yii::$app->user->isGuest ? (
+                ['label' => 'Login', 'url' => ['/site/login']]
+                ) : (
+                    '<li>'
+                    . Html::beginForm(['/site/logout'], 'post')
+                    . Html::submitButton(
+                        'Logout (' . Yii::$app->user->identity->login . ')',
+                        ['class' => 'btn btn-link logout']
+                    )
+                    . Html::endForm()
+                    . '</li>'
+                )
+            ],
+        ]
     ]);
+    echo '</div>';
+
+
+
+
+//    echo Nav::widget([
+//        'options' => ['class' => 'navbar-nav navbar-right'],
+//
+//        'items' => [
+//
+//            ['label' => 'Home', 'url' => ['/site/index']],
+//            ['label' => 'About', 'url' => ['/site/about']],
+//            ['label' => 'Contact', 'url' => ['/site/contact']],
+//
+//            Yii::$app->user->isGuest ? (
+//                ['label' => 'Login', 'url' => ['/site/login']]
+//            ) : (
+//                '<li>'
+//                . Html::beginForm(['/site/logout'], 'post')
+//                . Html::submitButton(
+//                    'Logout (' . Yii::$app->user->identity->login . ')',
+//                    ['class' => 'btn btn-link logout']
+//                )
+//                . Html::endForm()
+//                . '</li>'
+//            )
+//        ],
+//    ]);
     NavBar::end();
     ?>
     <br><br><br><br>

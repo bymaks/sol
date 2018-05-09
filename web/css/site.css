@@ -173,6 +173,20 @@ a.desc:after {
 .info-order .result .money{
     font-size: 16px;
 }
+.search-input {
+    padding: 8px 0px;
+}
+.navbar .dropdown-menu,.navbar .dropdown-menu li a:focus, .navbar .dropdown-menu li a:link  {
+   color: #e6e6e6;
+   background: #101010;
+}
+.navbar .dropdown-menu li a {
+     color:#e6e6e6;
+}
+.navbar .dropdown-menu li a:hover{
+    color:#e6e6e6;
+    background: #292929;
+}
 /**/
 img.size-1 {
     width: 100%;
