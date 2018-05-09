@@ -11,6 +11,7 @@ use Yii;
  * @property string $name
  * @property string $vendor_code
  * @property string $price
+ * @property int $category_id
  * @property int $ci_id
  * @property string $description
  * @property int $show_status
@@ -43,7 +44,7 @@ class Goods extends \yii\db\ActiveRecord
         return [
             [['name', 'vendor_code', 'price', 'ci_id', 'description'], 'required', 'message'=>'Не может быть пустым'],
             [['price'], 'number'],
-            [['ci_id', 'show_status', 'create_by_user', 'update_by_user', 'status'], 'integer'],
+            [['category_id', 'ci_id', 'show_status', 'create_by_user', 'update_by_user', 'status'], 'integer'],
             [['description'], 'string'],
             [['create_time', 'update_time'], 'safe'],
             [['name'], 'string', 'max' => 256],
@@ -51,6 +52,8 @@ class Goods extends \yii\db\ActiveRecord
             [['update_by_user'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['update_by_user' => 'id']],
             [['create_by_user'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['create_by_user' => 'id']],
             [['update_by_user'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['update_by_user' => 'id']],
+            [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => GoodsCategory::className(), 'targetAttribute' => ['category_id' => 'id']],
+            [['ci_id'], 'exist', 'skipOnError' => true, 'targetClass' => GoodsCi::className(), 'targetAttribute' => ['ci_id' => 'id']],
         ];
     }
 
@@ -64,6 +67,7 @@ class Goods extends \yii\db\ActiveRecord
             'name' => 'Название',
             'vendor_code' => 'Артикул',
             'price' => 'Цена',
+            'category_id' => 'Категория',
             'ci_id' => 'ЕИ',
             'description' => 'Описание',
             'show_status' => 'Отображать',
@@ -91,20 +95,21 @@ class Goods extends \yii\db\ActiveRecord
         return $this->hasOne(Users::className(), ['id' => 'create_by_user']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getUpdateByUser0()
+    public function getCategory()
     {
-        return $this->hasOne(Users::className(), ['id' => 'update_by_user']);
+        return $this->hasOne(GoodsCategory::className(), ['id' => 'category_id']);
     }
-
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getOrderItems()
     {
         return $this->hasMany(OrderItem::className(), ['good_id' => 'id']);
+    }
+
+    public function getCi()
+    {
+        return $this->hasOne(GoodsCi::className(), ['id' => 'ci_id']);
     }
 
     public function afterSave($insert, $changedAttributes)

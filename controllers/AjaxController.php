@@ -2,47 +2,37 @@
 
 namespace app\controllers;
 
-use app\models\GoodsStok;
-use app\models\GoodsStokSearch;
 use Yii;
-use app\models\Goods;
-use app\models\GoodsSearch;
-use yii\filters\AccessControl;
-use yii\helpers\Json;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use app\models\GoodsStok;
+use app\models\GoodsStokSearch;
+use yii\filters\AccessControl;
+use yii\helpers\Json;
 
-
-class AjaxController extends Controller
+class AjaxController  extends Controller
 {
-
-    /**
-     * @inheritdoc
-     */
     public function behaviors()
     {
         return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
-
             'access' => [
-                'class' => \yii\filters\AccessControl::className(),
+                'class' => AccessControl::className(),
                 'rules' => [
                     [
+                        'actions' => ['create','goods-stok', 'stok-create'],
                         'allow' => true,
-                        'roles' => ['@'],
+                        'roles' => ['Admin',],
+                    ],
+                    [
+                        'actions' => ['index', 'view', 'update'],
+                        'allow' => true,
+                        'roles' => ['Booker',],
                     ],
                 ],
             ],
-
         ];
     }
-
 
     //Поиск сретификат
     public function actionSearchInput() {
@@ -50,5 +40,21 @@ class AjaxController extends Controller
             $value = Yii::$app->request->post('value');
             return $value;
         }
+    }
+
+    public function actionSearchGoods()
+    {
+        $result = false;
+        return json_encode($result);
+    }
+
+    public function actionAddGood(){
+        $result = false;
+        return json_encode($result);
+    }
+
+    public function actionCreateOrder(){
+        $result = false;
+        return json_encode($result);
     }
 }

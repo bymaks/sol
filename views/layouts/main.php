@@ -118,7 +118,7 @@ Yii::$app->name = "SolSale"
 //    ]);
     NavBar::end();
     ?>
-    <br><br><br><br>
+    <br>
     <div class="container-fluid">
 
         <?= Breadcrumbs::widget([

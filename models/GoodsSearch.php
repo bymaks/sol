@@ -18,7 +18,7 @@ class GoodsSearch extends Goods
     public function rules()
     {
         return [
-            [['id', 'ci_id', 'show_status', 'create_by_user', 'update_by_user', 'status'], 'integer'],
+            [['id', 'category_id', 'ci_id', 'show_status', 'create_by_user', 'update_by_user', 'status'], 'integer'],
             [['name', 'vendor_code', 'description', 'create_time', 'update_time'], 'safe'],
             [['price'], 'number'],
         ];
@@ -62,6 +62,7 @@ class GoodsSearch extends Goods
         $query->andFilterWhere([
             'id' => $this->id,
             'price' => $this->price,
+            'category_id' => $this->category_id,
             'ci_id' => $this->ci_id,
             'show_status' => $this->show_status,
             'create_by_user' => $this->create_by_user,
