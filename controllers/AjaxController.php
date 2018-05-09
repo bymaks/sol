@@ -6,6 +6,16 @@ use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use app\models\GoodsStok;
+use app\models\GoodsStokSearch;
+use Yii;
+use app\models\Goods;
+use app\models\GoodsSearch;
+use yii\filters\AccessControl;
+use yii\helpers\Json;
+use yii\web\Controller;
+use yii\web\NotFoundHttpException;
+use yii\filters\VerbFilter;
 
 class AjaxController  extends Controller
 {
@@ -28,6 +38,14 @@ class AjaxController  extends Controller
                 ],
             ],
         ];
+    }
+
+    //Поиск сретификат
+    public function actionSearchInput() {
+        if( Yii::$app->request->post('search')) {
+            $value = Yii::$app->request->post('value');
+            return $value;
+        }
     }
 
     public function actionSearchGoods()
