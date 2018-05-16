@@ -12,8 +12,8 @@ use Yii;
  * @property int $create_by_user
  * @property string $create_at
  * @property int $season_tikets_id
- * @property int $used_minuts
- * @property int $all_minuts
+ * @property int $discont
+ * @property int $minuts
  * @property string $summ
  * @property string $comment
  * @property int $status
@@ -39,10 +39,12 @@ class OrderShop extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['shop_id', 'create_by_user', 'create_at', 'season_tikets_id'], 'required'],
-            [['shop_id', 'create_by_user', 'season_tikets_id', 'used_minuts', 'all_minuts', 'status'], 'integer'],
+            [['shop_id', 'create_by_user', 'create_at', ], 'required'],
+            [['shop_id', 'create_by_user', 'season_tikets_id', 'minuts', 'status'], 'integer'],
             [['create_at'], 'safe'],
-            [['summ'], 'number'],
+            [['create_at'], 'default', 'value'=>(empty($this->create_at)?Date('Y-m-d H:i:s'):$this->create_at)],
+            [['create_by_user'], 'default', 'value'=>(empty($this->create_by_user)?Yii::$app->user->id:$this->create_by_user)],
+            [['discont','summ'], 'number'],
             [['comment'], 'string', 'max' => 512],
             [['shop_id'], 'exist', 'skipOnError' => true, 'targetClass' => Shop::className(), 'targetAttribute' => ['shop_id' => 'id']],
             [['create_by_user'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['create_by_user' => 'id']],
@@ -57,15 +59,15 @@ class OrderShop extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'shop_id' => 'Shop ID',
-            'create_by_user' => 'Create By User',
-            'create_at' => 'Create At',
-            'season_tikets_id' => 'Season Tikets ID',
-            'used_minuts' => 'Used Minuts',
-            'all_minuts' => 'All Minuts',
-            'summ' => 'Summ',
-            'comment' => 'Comment',
-            'status' => 'Status',
+            'shop_id' => 'Точка продаж',
+            'create_by_user' => 'Кем создан',
+            'create_at' => 'Время создания',
+            'season_tikets_id' => 'Абонемент',
+            'minuts' => 'All Minuts',
+            'summ' => 'Сумма',
+            'discont' => 'Скидка',
+            'comment' => 'Комментарий',
+            'status' => 'Активность',
         ];
     }
 

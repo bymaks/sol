@@ -27,13 +27,18 @@ Yii::$app->name = "SolSale"
 </head>
 <body>
 <?php $this->beginBody() ?>
+<div id="loadAjax"><div class="loader"></div></div>
+
 <!--Modal Оплата-->
-<?php Modal::begin(['header' => '<h4></h4>',
-    'closeButton' => ['tag' => 'button', 'label' => '&times;'],
-    'id' => 'modal-global',
-    // 'size'=>'modal-sm',
-]);?>
-<?php Modal::end(); ?>
+<?php
+    Modal::begin(['header' => '<h4></h4>',
+        'closeButton' => ['tag' => 'button', 'label' => '&times;'],
+        'id' => 'modal-global',
+        // 'size'=>'modal-sm',
+    ]);
+    Modal::end();
+?>
+
 <!--Ппанель уведомления -->
 <div class="alert alert__fix js-alert-close">
     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
@@ -118,6 +123,9 @@ Yii::$app->name = "SolSale"
 //    ]);
     NavBar::end();
     ?>
+    <br>
+    <br>
+    <br>
     <br>
     <div class="container-fluid">
 

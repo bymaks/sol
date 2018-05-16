@@ -48,7 +48,7 @@ class Users extends System
     }
     public function rules(){
         return [
-            [['login', 'phone', 'first_name', 'second_name', 'password_hash'], 'required'],
+            [['login', 'phone', 'first_name', 'second_name', 'password_hash', 'shop_id'], 'required'],
             [['telegramm', 'gender', 'time_out', 'create_by_user', 'update_by_user', 'status'], 'integer'],
             [['birthday', 'created_at', 'updated_at'], 'safe'],
             [['login', 'email', 'first_name', 'second_name', 'last_name', 'password_reset_token', 'password_hash', 'auth_key','roleName'], 'string', 'max' => 255],
@@ -74,6 +74,7 @@ class Users extends System
             'last_name' => 'Отчество',
             'gender' => 'Пол',
             'birthday' => 'Дата рождения',
+            'shop_id' => 'Точка продаж',
             'password_reset_token' => 'Password Reset Token',
             'password_hash' => 'Password Hash',
             'auth_key' => 'Auth Key',
@@ -97,6 +98,10 @@ class Users extends System
 
     public function getRole(){
         return $this->hasOne(AuthAssignment::className(), ['user_id' => 'id']);
+    }
+
+    public function getShop(){
+        return $this->hasOne(Shop::className(), ['id' => 'shop_id']);
     }
 
     public function validPass($attribute, $params){

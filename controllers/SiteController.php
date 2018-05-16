@@ -60,6 +60,10 @@ class SiteController extends Controller
     //Displays homepage
     public function actionIndex()
     {
+        //$session = Yii::$app->session->get('order');
+        //System::mesprint($session);die();
+
+
         if (!Yii::$app->user->isGuest){
             $smsKey = Users::find()->where(['id'=>Yii::$app->user->id])->one();
             if(!empty($smsKey)){
