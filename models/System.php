@@ -127,6 +127,7 @@ class System extends \yii\db\ActiveRecord
         $result = [];
         $summ=0;
         $discont =0;//скидка
+        $discontMinute =0;//скидка минут по абонементу
         $minuts = 0; // всего минут
         $seasonTiket=false;
         if(!empty($orderSession)){
@@ -146,6 +147,7 @@ class System extends \yii\db\ActiveRecord
                                 $minuts += $item['count'];
                                 //считаем минуты минус минуты с абонемента
                                 $summ += $good->price*( (($item['count']-$seasonTiket->minute_balance)<0?0:$item['count']-$seasonTiket->minute_balance));
+                                $discontMinute += $item['count'] - ( ( ($item['count']-$seasonTiket->minute_balance)<0?0:$item['count']-$seasonTiket->minute_balance));
                             }
                             else{
                                 $summ += $good->price*$item['count'];
@@ -158,6 +160,7 @@ class System extends \yii\db\ActiveRecord
         }
         $result['order']['createBy']=Yii::$app->user->id;
         $result['order']['discont']=$discont;// скидак
+        $result['order']['discontMinute']=$discontMinute;// скидак минут
         $result['order']['seasonTiket'] = (!empty($orderSession['order']['seasonTiket'])?$orderSession['order']['seasonTiket']:false);
         $result['order']['minuts'] = $minuts;
         $result['order']['summ'] = $summ;
