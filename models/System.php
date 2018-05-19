@@ -123,4 +123,46 @@ class System extends \yii\db\ActiveRecord
         return $result;
     }
 
+    public static function refreshSummaryOrderInfo($orderSession=[]){
+        $result = [];
+        $summ=0;
+        $discont =0;//скидка
+        $minuts = 0; // всего минут
+        $seasonTiket=false;
+        if(!empty($orderSession)){
+            if(!empty($orderSession['order']['items'])){
+                if(!empty($orderSession['order']['seasonTiket'])){
+                    $seasonTiket = SeasonTikets::find()->where(['id'=>$orderSession['order']['seasonTiket'], 'status'=>1])->andWhere(['>', 'minute_balance', 0])->one();
+                    if(!empty($seasonTiket)){
+                        unset($orderSession['order']['seasonTiket']);
+                    }
+                }
+                foreach ($orderSession['order']['items'] as $item){
+                    if(!empty($item['goodId'])){
+                        $good = Goods::find()->where(['id'=>$item['goodId']])->one();
+                        if(!empty($good)){
+                            $summ += $good->price*$item['count'];
+                            if(in_array($good->category_id, [Yii::$app->params['categoryMinut']])){
+                                $minuts += $item['count'];
+                                //считаем минуты минус минуты с абонемента
+                                $summ += $good->price*( (($item['count']-$seasonTiket->minute_balance)<0?0:$item['count']-$seasonTiket->minute_balance));
+                            }
+                            else{
+                                $summ += $good->price*$item['count'];
+                            }
+                        }
+                    }
+                }
+                $result['order']['items']=$orderSession['order']['items'];
+            }
+        }
+        $result['order']['createBy']=Yii::$app->user->id;
+        $result['order']['discont']=$discont;// скидак
+        $result['order']['seasonTiket'] = (!empty($orderSession['order']['seasonTiket'])?$orderSession['order']['seasonTiket']:false);
+        $result['order']['minuts'] = $minuts;
+        $result['order']['summ'] = $summ;
+        $result['order']['unique']=password_hash(rand(1,10000), PASSWORD_BCRYPT);
+        return $result;
+    }
+
 }

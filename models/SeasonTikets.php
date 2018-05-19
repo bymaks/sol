@@ -8,8 +8,9 @@ use Yii;
  * This is the model class for table "season_tikets".
  *
  * @property int $id
+ * @property int $tiket_id
  * @property int $minute_all
- * @property int $minute_used
+ * @property string $minute_balance
  * @property int $create_by_user
  * @property string $create_at
  * @property string $exp_at
@@ -35,12 +36,16 @@ class SeasonTikets extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['minute_all', 'minute_used', 'create_by_user', 'create_at', 'exp_at', 'price'], 'required'],
-            [['minute_all', 'minute_used', 'create_by_user', 'status'], 'integer'],
+            [['tiket_id', 'minute_all', 'minute_balance',  'create_at', 'price'], 'required'],
+            [['minute_all', 'create_by_user', 'status'], 'integer'],
+            [['create_by_user'], 'default', 'value'=>(!empty($this->create_by_user)?$this->create_by_user:Yii::$app->user->id) ],
+            [['minute_balance', 'price'], 'number'],
             [['create_at', 'exp_at'], 'safe'],
-            [['price'], 'number'],
+            [['tiket_id'], 'string', 'max' => 16],
             [['comment'], 'string', 'max' => 512],
+            [['tiket_id'], 'unique'],
         ];
+
     }
 
     /**
@@ -50,14 +55,15 @@ class SeasonTikets extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'minute_all' => 'Minute All',
-            'minute_used' => 'Minute Used',
-            'create_by_user' => 'Create By User',
-            'create_at' => 'Create At',
-            'exp_at' => 'Exp At',
-            'comment' => 'Comment',
-            'price' => 'Price',
-            'status' => 'Status',
+            'tiket_id' => 'Номер',
+            'minute_all' => 'Всего минут',
+            'minute_balance' => 'Баланс Минут',
+            'create_by_user' => 'Создан',
+            'create_at' => 'Время создания',
+            'exp_at' => 'Истакает',
+            'comment' => 'Комментарий',
+            'price' => 'Стоимость',
+            'status' => 'Активность',
         ];
     }
 
@@ -67,5 +73,10 @@ class SeasonTikets extends \yii\db\ActiveRecord
     public function getOrderShops()
     {
         return $this->hasMany(OrderShop::className(), ['season_tikets_id' => 'id']);
+    }
+
+    public function getSeasonTiketTransactions()
+    {
+        return $this->hasMany(SeasonTiketTransaction::className(), ['season_tiket_id' => 'id']);
     }
 }

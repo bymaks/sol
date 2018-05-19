@@ -12,6 +12,7 @@ $this->params['breadcrumbs'][] = 'Редактирование';
 <div class="goods-update">
     <?= $this->render('_form', [
         'model' => $model,
+        'modelImage' => $modelImage,
     ]) ?>
 
 </div>

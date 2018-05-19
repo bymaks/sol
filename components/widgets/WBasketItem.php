@@ -4,21 +4,24 @@ namespace app\components\widgets;
  * Created by PhpStorm.
  * User: 34max
  * Date: 09.05.2018
- * Time: 20:19
+ * Time: 20:18
  */
-
 use Yii;
 use yii\base\Widget;
 use yii\helpers\Html;
-
-class WSearchItem extends Widget
+class WBasketItem extends \yii\base\Widget
 {
-    public $goodId = NULL;
+
+    public $goodId=NULL;
+    public $count = 0;
 
     public function init() {
         parent::init();
         if (empty($this->goodId)) {
             $this->goodId = NULL;
+        }
+        if (empty($this->count)) {
+            $this->count = 0;
         }
     }
 
@@ -34,23 +37,14 @@ class WSearchItem extends Widget
                         <img class="media-object" src="<?=$srcImage?>" alt="...">
                     </a>
                     <div class="media-body">
-                        <h4 class="media-heading"><?= $good->name ?><?=((!empty($good->ci))? ' 1 '.$good->ci->name:'')?></h4>
+                        <h4 class="media-heading"><?= $good->name ?><?=((!empty($good->ci))? ' '.$this->count.' '.$good->ci->name:'')?></h4>
                         <div class="small text-muted"><?=((!empty($good->category))? $good->category->name:'')?> / <?=((!empty($good->vendor_code))? $good->vendor_code:'н.д.')?></div>
-                        <div class="small text-muted">цена: <?=$good->price?> р.</div>
+                        <div class="small text-muted">Цена: <?=$good->price .'р. х '.$this->count?></div>
                     </div>
-                    <div class="action pull-right" title="Добавить" onclick="addItemToBasket(<?=$good->id?>);"><i class="glyphicon glyphicon-plus text-success"></i>
-                        <!--<br><span class="text-danger small">Ecf</span>-->
-                    </div>
-                    <!--
-                    <div class="action pull-right" title="Добавить"><i class="glyphicon glyphicon glyphicon-ok text-success"></i> </div>
-                    <div class="action pull-right" title="Добавить"><i class="glyphicon glyphicon-plus text-muted"></i> </div>
-                    <div class="action pull-right" title="Добавить"><i class="glyphicon glyphicon-plus text-primary"></i> </div>
-
-                    -->
+                    <div class="action pull-right" title="Удалить" onclick="removeItemFromBasket(<?=$good->id?>);"><i class="glyphicon glyphicon glyphicon-remove text-danger"></i> </div>
                 </div>
                 <?php
             }
         }
-
     }
 }
