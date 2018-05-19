@@ -6,6 +6,8 @@ namespace app\components\widgets;
  * Date: 09.05.2018
  * Time: 20:18
  */
+use app\models\SeasonTikets;
+use app\models\System;
 use Yii;
 use yii\base\Widget;
 use yii\helpers\Html;
@@ -29,10 +31,11 @@ class WBasket extends \yii\base\Widget
     public function run(){
         ?>
         <div class="row basket_result">
+            <div class="col-md-6">
         <?php
+        $seasonTiketId = '';
         if(!empty($this->order)){
             ?>
-            <div class="col-md-6">
                 <div class="goods-items">
                 <?php
                 if(!empty($this->order['order']['items'])){
@@ -42,28 +45,48 @@ class WBasket extends \yii\base\Widget
                 }
                 ?>
                 </div>
+
+            <?php
+
+            if(!empty($this->order['order']['seasonTiket'])){
+
+                $seasonTiket = SeasonTikets::find()->where(['id'=>$this->order['order']['seasonTiket'], 'status'=>1])->one();
+                if(!empty($seasonTiket)){
+                    $seasonTiketId = $seasonTiket->tiket_id;
+                }
+            }
+
+        }
+
+
+
+
+        ?>
             </div><!--div col-md-6-->
             <div class="col-md-6">
                 <div class="img">
                     <img class="size-1" src="https://cdn.pixabay.com/photo/2014/08/19/14/06/coupon-421600_960_720.jpg">
-                    <div class="text-center buttons"> <button class="btn-success btn">Подключить</button></div>
+                    <div class="input-group text-center buttons ">
+                        <input type="text" class="form-control" id="cert" value="<?=$seasonTiketId?>" placeholder="Введите номер сертификата">
+                        <span class="input-group-btn"> <button class="btn-success btn" id="js-addCert">Подключить</button></span>
+                    </div><!-- /input-group -->
                 </div>
                 <div class="total">
-                    <div class="form-group has-error">
-                        <input type="text" class="form-control col-md-4" placeholder="Номер сертификат">
-                        <p class="help-block ">Номер не найден</p>
-                    </div>
+
                     <div class="total-money">
-                        <div><b>Цена:</b> <span class="money"><?=(!empty($this->order['order']['itogo'])?$this->order['order']['itogo']:0)?> р.</span></div>
-                        <div><b>Скидка:</b> <span class="money text-danger">-100 р.</span></div>
-                        <div class="result"><h4>Итого:</h4> <span class="money">3 000 р.</span></div>
-                        <div class="text-right"> <button class="btn-success btn" onclick="createOrder(<?=!empty($_SESSION['order']['unique'])?$_SESSION['order']['unique']:false?>);">Оформить</button></div>
+                        <!--<div><b>Цена:</b> <span class="money"> р.</span></div>-->
+                        <div><b>Скидка:</b> <span class="money text-danger"><?=(!empty($this->order['order']['discont'])?$this->order['order']['discont']:0)?> р.</span></div>
+                        <div class="result"><h4>Итого:</h4> <span class="money"><?=(!empty($this->order['order']['summ'])?$this->order['order']['summ']:0)?> р.</span></div>
+                        <div class="text-right">
+                            <button class=" btn-warning btn" id="cancelBasket" onclick="cancelBasket(<?=(!empty($this->order['order']['unique'])?"'".$this->order['order']['unique']."'":"'false'")?>);">Сброисить</button>
+                            <button class="btn-success btn" id="createOrder" onclick="createOrder(<?=(!empty($this->order['order']['unique'])?"'".$this->order['order']['unique']."'":"'false'")?>);">Оформить</button>
+                        </div>
+                        <br>
+
+
                     </div>
                 </div>
             </div><!--div col-md-6-->
-            <?php
-        }
-        ?>
         </div><!--div row-->
         <?php
     }

@@ -54,27 +54,30 @@ function addItemToBasket(goodId){
     var data = {};
     data[param] = token;
     data['goodId'] = goodId;
-
+    loader('show');
     $.ajax({
         url: '/ajax/add-good',
         type: "post",
         data: data,
         success: function(response) {
-            //разблокируем Input
+            //разблокируем
+            loader('hide');
 
-            alert_messages('Добавлено',1,false);
             var result = JSON.parse(response);
             if(result.status=='true' && result.error ==0){
                 $('.basket_result').empty();
                 $('.basket_result').html(result.html);
+                alert_messages(result.message,1,false);
             }
             else{
                 $('.help-block').empty();
                 $('.help-block').append(result.message);
+                alert_messages(result.message,2,false);
             }
             console.log('success');
         },
         error: function () {
+            loader('hide');
             alert_messages('Ошибка',2,false);
         }
     });
@@ -85,14 +88,14 @@ function removeItemFromBasket(goodId) {
     var data = {};
     data[param] = token;
     data['goodId'] = goodId;
-
+    loader('show');
     $.ajax({
         url: '/ajax/remove-good',
         type: "post",
         data: data,
         success: function(response) {
             //разблокируем Input
-
+            loader('hide');
             alert_messages('Удалено',1,false);
             var result = JSON.parse(response);
             if(result.status=='true' && result.error ==0){
@@ -106,6 +109,7 @@ function removeItemFromBasket(goodId) {
             console.log('success');
         },
         error: function () {
+            loader('hide');
             alert_messages('Ошибка',2,false);
         }
     });
@@ -113,10 +117,12 @@ function removeItemFromBasket(goodId) {
 
 function createOrder(uni) {
     console.log('create order');
-    //показать прелоадер
+    $('#createOrder').attr('disabled', 'disabled');
+    loader('show');//показать прелоадер
     var data = {};
     data[param] = token;
     data['uni'] = uni;
+
     $.ajax({
         url: '/ajax/create-order',
         type: "post",
@@ -124,18 +130,56 @@ function createOrder(uni) {
         success: function (response) {
             //разблокируем Input
             console.log('success');
-            //loader('hide');
+            $('#createOrder').removeAttr('disabled');
+            loader('hide');
             var result = JSON.parse(response);
             if (result.status == 'true' && result.error == 0) {
-
+                location.reload();
             }
             else {
-
+                alert_messages(result.message,2,false);
             }
             console.log('success');
         },
         error: function(responce){
             console.log('error');
+            $('#createOrder').removeAttr('disabled');
+            loader('hide');
+            alert_messages('Ошибка', 2, false);
+        }
+    });
+}
+
+function cancelBasket(uni) {
+    console.log('create order');
+    $('#cancelBasket').attr('disabled', 'disabled');
+    loader('show');
+    //показать прелоадер
+    var data = {};
+    data[param] = token;
+    data['uni'] = uni;
+    $.ajax({
+        url: '/ajax/cancel-basket',
+        type: "post",
+        data: data,
+        success: function (response) {
+            //разблокируем Input
+            console.log('success');
+            $('#cancelBasket').removeAttr('disabled');
+            loader('hide');
+            var result = JSON.parse(response);
+            if (result.status == 'true' && result.error == 0) {
+                location.reload();
+            }
+            else {
+                alert_messages(result.message, 2, false);
+            }
+            console.log('success');
+        },
+        error: function(responce){
+            console.log('error');
+            $('#cancelBasket').removeAttr('disabled');
+            loader('show');
             alert_messages('Ошибка', 2, false);
         }
     });
@@ -178,6 +222,45 @@ $(document).on('keyup','#search_goods',function () {
         });
     }
 });
+
+//Добавить сертификат
+$(document).on('click', '#js-addCert', function () {
+   console.log('add season tiket');
+    if($('#cert').val().length>0){
+
+        console.log('ajax');
+        $('#js-addCert').attr('disable', 'disable');
+        loader('show');
+        var data = {};
+        data[param] = token;
+        data['certificate'] = $('#cert').val();
+        $.ajax({
+            url: '/ajax/add-season-tiket',
+            type: "post",
+            data: data,
+            success: function(response) {
+                //разблокируем Input
+                $('#js-addCert').removeAttr('disable');
+                loader('hide');
+                var result = JSON.parse(response);
+                if(result.status=='true' && result.error ==0){
+                    $('.basket_result').empty();
+                    $('.basket_result').html(result.html);
+                }
+                else{
+                    alert_messages(result.message,2, false);
+                }
+                console.log('success');
+            },
+            error:function(){
+                $('#js-addCert').removeAttr('disable');
+                loader('hide');
+                alert_messages('Ошибка',2, false);
+            }
+        });
+    }
+});
+
 // Поиск;
 $(document).on('click','.js-button-search',function () {
     var search = $('input.js-value-search').val();
@@ -185,8 +268,6 @@ $(document).on('click','.js-button-search',function () {
     console.log('++');
     window_global('#modal-global','ajax/search-input',{'search':true, 'value':search},'Поиск сертивикат');
 });
-
-
 
 // Модальная окно (ГЛОБАЛЬНЫЙ МОЖНО ВЕЗДЕ ИСПОЛЬЗОВАТЬ);
 function window_global(name,url,objPost,title) {

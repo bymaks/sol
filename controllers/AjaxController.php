@@ -7,6 +7,7 @@ use app\components\widgets\WSearchItem;
 use app\models\Goods;
 use app\models\OrderItem;
 use app\models\OrderShop;
+use app\models\SeasonTikets;
 use app\models\System;
 use app\models\User;
 use app\models\Users;
@@ -28,7 +29,7 @@ class AjaxController  extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['search-goods','add-good', 'remove-good', 'create-order'],
+                        'actions' => ['search-goods','add-good', 'remove-good', 'create-order', 'cancel-basket', 'add-season-tiket'],
                         'allow' => true,
                         'roles' => ['seller',],
                     ],
@@ -165,10 +166,6 @@ class AjaxController  extends Controller
                         else{
                             unset($session['order']['items'][$params['goodId']]);
                         }
-                        $session['order']['itogo'] = $session['order']['itogo'] - $good->price;
-                        if($session['order']['itogo']<0){
-                            $session['order']['itogo']=0;
-                        }
                         //TODO: пересчитать цену скидку все пересчитать
                         //пересчитываем заказ
                         $session = System::refreshSummaryOrderInfo($session);
@@ -196,9 +193,10 @@ class AjaxController  extends Controller
         //списываем деньги по ебонименту
 
         $params = Yii::$app->request->post();
-        $result =['status'=>'false', 'message'=>'Не найдено', 'error'=>3001, 'html'=>'', ];
+        $result =['status'=>'false', 'message'=>'Не найдено', 'error'=>4000, 'html'=>'', ];
         $session = Yii::$app->session->get('order');
-        if(!empty($params['uni']) && !empty($session['order']['unique']) && password_verify($params['uni'],$session['order']['unique'])){
+
+        if(!empty($params['uni']) && !empty($session['order']['unique']) && $params['uni']==$session['order']['unique']){
             //можно создавать заказ не шляпа
             $transaction = Yii::$app->db->beginTransaction();
             $user = Users::find()->where(['id'=>Yii::$app->user->id])->one();
@@ -206,7 +204,7 @@ class AjaxController  extends Controller
             if(!empty($user) && !empty($user->shop_id)){
                 $order = new OrderShop();
                 $order->shop_id = $user->shop_id;
-                $order->season_tikets_id = (!empty($session['order']['used_minuts'])?$session['order']['used_minuts']:0);
+                $order->season_tikets_id = (!empty($session['order']['seasonTiket'])?$session['order']['seasonTiket']:NULL);
                 $order->minuts = (!empty($session['order']['minuts'])?$session['order']['minuts']:0);
                 $order->summ = (!empty($session['order']['summ'])?$session['order']['summ']:0);
                 $order->discont = (!empty($session['order']['discont'])?$session['order']['discont']:0);
@@ -216,18 +214,19 @@ class AjaxController  extends Controller
                     //перебираем айтемся и добавляем их
                     $flagItem = true;
                     foreach ($session['order']['items'] as $item){
+                        $goods = Goods::find()->where(['id'=>$item['goodId']])->one();
                         $orderItem = new OrderItem();
                         $orderItem->order_shop_id = $order->id;
-                        $orderItem->good_id = $item['goodId'];
+                        $orderItem->good_id = $goods->id;
                         $orderItem->good_count = $item['count'];
-                        $orderItem->good_price = $item['goodPrice'];
+                        $orderItem->good_price = $goods->price;
                         $orderItem->commis = 0;
-                        $orderItem->discont = $item['discont'];
+                        $orderItem->discont =0;
                         $orderItem->status = 1;
-                        if($orderItem->save(true)){
+                        if(!$orderItem->save(true)){
                             $flagItem = false;
                         }
-                        unset($orderItem);
+                        unset($orderItem, $goods);
                     }
                     if($flagItem){
                         $order->status=1;
@@ -258,11 +257,39 @@ class AjaxController  extends Controller
         return json_encode($result);
     }
 
-    //TODO: кнопка сбросить заказ
-    //TODO: кнопка добавить к заказу абонемент
-    //TODO: форма со созданию абонементов так что бы при их создании создавались заказы имхо
+    public function actionCancelBasket(){
+        $params = Yii::$app->request->post();
+        $result =['status'=>'false', 'message'=>'Не найдено', 'error'=>5001, 'html'=>'', ];
+        $session = Yii::$app->session->get('order');
+        if(!empty($params['uni']) && !empty($session['order']['unique']) && $params['uni']==$session['order']['unique']){
+            Yii::$app->session->remove('order');
+            $result =['status'=>'true', 'message'=>'Очищено', 'error'=>0, 'html'=>'', ];
+        }
+        return json_encode($result);
+    }
+
+    public function actionAddSeasonTiket(){
+        $params = Yii::$app->request->post();
+        $result =['status'=>'false', 'message'=>'Не найдено', 'error'=>5001, 'html'=>'', ];
+        $session = Yii::$app->session->get('order');
+        if(!empty($params['certificate'])){
+            if($seasonTiket = SeasonTikets::find()->where(['tiket_id'=>$params['certificate'], 'status'=>1])->andWhere(['>','minute_balance',0])->one()){
+                $session['order']['seasonTiket'] = $seasonTiket->id;
+                $session = System::refreshSummaryOrderInfo($session);// сделаем пересчет на всякий слушяай
+                Yii::$app->session->set('order', $session);
+                $result =['status'=>'true', 'message'=>'Добавлен', 'error'=>0, 'html'=>WBasket::widget(['order'=>$session]), ];
+            }
+            else{
+                $result =['status'=>'false', 'message'=>'Не найдено', 'error'=>6001, 'html'=>'', ];
+            }
+        }
+        return json_encode($result);
+    }
+
     //TODO: обновление баданса абонементов
     //TODO: лог транзакций абонементов
+
     //TODO: Оформление вида модалки по ебонементу так же как и в заказе
+    //TODO: картинки на товары вывести во вобюхе и дать возможность удалять
 
 }

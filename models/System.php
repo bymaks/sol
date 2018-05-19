@@ -132,14 +132,17 @@ class System extends \yii\db\ActiveRecord
         if(!empty($orderSession)){
             if(!empty($orderSession['order']['items'])){
                 if(!empty($orderSession['order']['seasonTiket'])){
-                    $seasonTiket = SeasonTikets::find()->where(['id'=>$orderSession['order']['seasonTiket'], 'status'=>1])->andWhere(['>', 'minute_used', 0])->one();
+                    $seasonTiket = SeasonTikets::find()->where(['id'=>$orderSession['order']['seasonTiket'], 'status'=>1])->andWhere(['>', 'minute_balance', 0])->one();
+                    if(!empty($seasonTiket)){
+                        unset($orderSession['order']['seasonTiket']);
+                    }
                 }
                 foreach ($orderSession['order']['items'] as $item){
                     if(!empty($item['goodId'])){
                         $good = Goods::find()->where(['id'=>$item['goodId']])->one();
                         if(!empty($good)){
                             $summ += $good->price*$item['count'];
-                            if(in_array($good->categoty_id, [Yii::$app->params['categoryMinut']])){
+                            if(in_array($good->category_id, [Yii::$app->params['categoryMinut']])){
                                 $minuts += $item['count'];
                                 //считаем минуты минус минуты с абонемента
                                 $summ += $good->price*( (($item['count']-$seasonTiket->minute_balance)<0?0:$item['count']-$seasonTiket->minute_balance));

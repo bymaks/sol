@@ -39,7 +39,7 @@ class OrderShop extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['shop_id', 'create_by_user', 'create_at', ], 'required'],
+            [['shop_id', ], 'required'],
             [['shop_id', 'create_by_user', 'season_tikets_id', 'minuts', 'status'], 'integer'],
             [['create_at'], 'safe'],
             [['create_at'], 'default', 'value'=>(empty($this->create_at)?Date('Y-m-d H:i:s'):$this->create_at)],

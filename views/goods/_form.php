@@ -1,9 +1,12 @@
 <?php
 
+use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use skeeks\yii2\ckeditor\CKEditorWidget;
 use skeeks\yii2\ckeditor\CKEditorPresets;
+use \kartik\file\FileInput;
+
 
 ?>
 
@@ -36,20 +39,20 @@ use skeeks\yii2\ckeditor\CKEditorPresets;
 
     <?php ActiveForm::end();
 
-    /*if(!$model->isNewRecord){
+    if(!$model->isNewRecord){
         echo "<h3>Добавить изображение</h3>";
         $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]);
-        echo $form->field($model_file, 'imageFile[]')->widget(
-            \kartik\file\FileInput::classname(), [
+        echo $form->field($modelImage, 'imageFile[]')->widget(
+            FileInput::classname(), [
                 'options' => ['multiple' => true],
                 'pluginOptions' => ['previewFileType' => 'any',
                     'uploadUrl' => Url::to(
-                        ['/cards-types/upload?model_id=' . $model->id]
+                        ['/goods/upload?modelId=' . $model->id]
                     )],
             ]
         )->label(false);
         ActiveForm::end();
-    }*/
+    }
     ?>
 </div>
 
