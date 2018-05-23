@@ -33,8 +33,8 @@ class File extends Model
             if ($this->validate()) {
                 foreach ($this->imageFile as $file) {
                     //$file->saveAs('/var/www/wf2adv/web/uploads/' . $model_id . '-'. $random . '.' . $file->extension);//linux
-                    $file->saveAs('c:/wamp64/www/sol/sol/web/upload/' . $model_id . '-'. $random . '.' . $file->extension);//win
-                    $path[] = '/uploads/' . $model_id . '-' . $random .  '.' . $file->extension;
+                    $file->saveAs("C:\\wamp64\\www\\sol\\sol\\web\\upload\\" . $model_id . '-'. $random . '.' . $file->extension);//win
+                    $path[] = '/upload/' . $model_id . '-' . $random .  '.' . $file->extension;
                 }
                 return json_encode($path);
             }

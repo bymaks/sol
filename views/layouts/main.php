@@ -12,7 +12,7 @@ use app\assets\AppAsset;
 use yii\bootstrap\ButtonDropdown;
 use yii\bootstrap\Modal;
 AppAsset::register($this);
-Yii::$app->name = "SolSale"
+Yii::$app->name = "Black Style"
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -61,7 +61,15 @@ Yii::$app->name = "SolSale"
             <input type="text" class="form-control js-value-search" placeholder="Введите номер сертификата">
             <span class="input-group-btn"><button class="btn btn-default js-button-search" type="button">Поиск</button></span>
         </div><!-- /input-group -->
+
+    </div>
+    <div class="col-sm-4 col-md-push-2 search-input">
+        <div class="input-group">
+            <?=Html::a('Оформить абонемент', ['/goods/create-tiket'], ['class' => 'btn btn-success margin-left-right'])?>
+        </div>
+
     </div><!-- /.col-lg-6 -->
+
     <?php
     echo '<div class="pull-right">';
     echo ButtonDropdown::widget([
@@ -74,17 +82,20 @@ Yii::$app->name = "SolSale"
            // 'options' => [''],
             'items' => [
 
-                ['label' => 'Home', 'url' => ['/site/index']],
-                ['label' => 'About', 'url' => ['/site/about']],
-                ['label' => 'Contact', 'url' => ['/site/contact']],
+                ['label' => 'Товары', 'url' => ['/goods/index']],
+                ['label' => 'Остатки', 'url' => ['/goods/index']],
+                ['label' => 'Абонементы', 'url' => ['/goods/tikets']],
+                ['label' => 'Цены на абонементы', 'url' => ['/goods/season-minutes']],
+                ['label' => 'Точки продаж', 'url' => ['/shop/index']],
+                ['label' => 'Пользователи', 'url' => ['/users/index']],
 
                 Yii::$app->user->isGuest ? (
-                ['label' => 'Login', 'url' => ['/site/login']]
+                ['label' => 'Вход', 'url' => ['/site/login']]
                 ) : (
                     '<li>'
                     . Html::beginForm(['/site/logout'], 'post')
                     . Html::submitButton(
-                        'Logout (' . Yii::$app->user->identity->login . ')',
+                        'Выход (' . Yii::$app->user->identity->login . ')',
                         ['class' => 'btn btn-link logout']
                     )
                     . Html::endForm()
@@ -140,9 +151,9 @@ Yii::$app->name = "SolSale"
 
 <footer class="footer">
     <div class="container">
-        <p class="pull-left">&copy; My Company <?= date('Y') ?></p>
+        <p class="pull-left">&copy;Black style <?= date('Y') ?></p>
 
-        <p class="pull-right"><?= Yii::powered() ?></p>
+        <p class="pull-right">Yii2</p>
     </div>
 </footer>
 

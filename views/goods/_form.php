@@ -40,6 +40,33 @@ use \kartik\file\FileInput;
     <?php ActiveForm::end();
 
     if(!$model->isNewRecord){
+
+        $images = $model->images;
+        if(!empty($images)){
+            echo '
+                <div class="row">';
+            $i=0;
+            foreach ($images as $image){
+                $main='';
+                if($image->main==1){
+                    $main = '<div class="close text-success" style="opacity: 1; position: absolute; left: 20px; top: -3px;">
+                                <span class="glyphicon glyphicon-ok text-success"></span>
+                             </div>';
+                }
+
+                $del = '<div class="close " style="opacity: 1;  position: absolute; right: 20px; top: -3px;" onClick=" delImage('.$image->id.')">
+                            <span class="glyphicon glyphicon-remove text-danger"></span>
+                        </div>';
+
+                echo '<div class="col-md-3">'.$main.$del.'<img class="media-object js-set-main" imgid="'.$image->id.'" goodid="'.$image->goods_id.'" src="'.$image->path.'" style="max-width: 100%;" alt="..."></div>';
+                $i++;
+                if($i==3){
+                    $i=0;
+                }
+            }
+            echo '</div>';
+        }
+
         echo "<h3>Добавить изображение</h3>";
         $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]);
         echo $form->field($modelImage, 'imageFile[]')->widget(

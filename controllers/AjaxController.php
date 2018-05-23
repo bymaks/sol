@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\components\widgets\WBasket;
 use app\components\widgets\WSearchItem;
 use app\models\Goods;
+use app\models\GoodsImages;
 use app\models\OrderItem;
 use app\models\OrderShop;
 use app\models\SeasonTikets;
@@ -29,7 +30,7 @@ class AjaxController  extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['search-goods','add-good', 'remove-good', 'create-order', 'cancel-basket', 'add-season-tiket'],
+                        'actions' => ['search-goods','add-good', 'remove-good', 'create-order', 'cancel-basket', 'add-season-tiket', 'search-input', 'set-img-main', 'del-image'],
                         'allow' => true,
                         'roles' => ['seller',],
                     ],
@@ -286,10 +287,55 @@ class AjaxController  extends Controller
         return json_encode($result);
     }
 
-    //TODO: обновление баданса абонементов
-    //TODO: лог транзакций абонементов
+    public function actionSetImgMain(){
+        $params = Yii::$app->request->post();
+        $result =['status'=>'false', 'message'=>'Не найдено', 'error'=>7001, 'html'=>'', ];
+        if(!empty($params['goodId']) && !empty($params['imgId']) && is_numeric(intval($params['goodId'])) && is_numeric(intval($params['goodId'])) ){
+            if($image = GoodsImages::find()->where(['id'=>$params['imgId']])->one()){
+                GoodsImages::updateAll(['main'=>0], ['goods_id'=>$params['goodId']]);
+                $image->main=1;
+                if($image->save(true)){
+                    $result =['status'=>'true', 'message'=>'Сохранено', 'error'=>0, 'html'=>'', ];
+                }
+                else{
+                    $result =['status'=>'false', 'message'=>'Ошибка сохранения', 'error'=>7002, 'html'=>'', ];
+                }
+            }
+            else{
+                $result =['status'=>'false', 'message'=>'Не найдено', 'error'=>7003, 'html'=>'', ];
+            }
+        }
+        return json_encode($result);
+    }
 
-    //TODO: Оформление вида модалки по ебонементу так же как и в заказе
-    //TODO: картинки на товары вывести во вобюхе и дать возможность удалять
+    public function actionDelImage()
+    {
+
+        $params = Yii::$app->request->post();
+        $result =['status'=>'false', 'message'=>'Не найдено', 'error'=>8001, 'html'=>'', ];
+        if(!empty($params['imgId']) && is_numeric(intval($params['imgId'])) ){
+            if($image = GoodsImages::find()->where(['id'=>$params['imgId']])->one()){
+                $image->status=0;
+                if($image->save(true)){
+                    $result =['status'=>'true', 'message'=>'Сохранено', 'error'=>0, 'html'=>'', ];
+                }
+                else{
+                    $result =['status'=>'false', 'message'=>'Ошибка сохранения', 'error'=>8002, 'html'=>'', ];
+                }
+            }
+            else{
+                $result =['status'=>'false', 'message'=>'Не найдено', 'error'=>8003, 'html'=>'', ];
+            }
+        }
+        return json_encode($result);
+    }
+
+    //TODO:1 обновление баданса абонементов проверить
+    //TODO:1 лог транзакций абонементов проверить
+    //TODO:1 вывести картинки товаров в форме и на главной странице
+    //TODO:1 картинки на товары вывести во вобюхе и дать возможность удалять
+
+    //TODO:0 Оформление вида модалки по ебонементу так же как и в заказе
+
 
 }

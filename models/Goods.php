@@ -107,6 +107,11 @@ class Goods extends \yii\db\ActiveRecord
         return $this->hasMany(OrderItem::className(), ['good_id' => 'id']);
     }
 
+    public function getImages()
+    {
+        return $this->hasMany(GoodsImages::className(), ['goods_id' => 'id'])->where(['status'=>1]);
+    }
+
     public function getCi()
     {
         return $this->hasOne(GoodsCi::className(), ['id' => 'ci_id']);

@@ -236,3 +236,10 @@ img.size-2 {
 .alert__fix .messages {
     font-size: 18px;
 }
+.margin-left-right{
+    margin-left: 15px;
+    margin-right: 15px;
+}
+.color-gold{
+    color: #fffc20;
+}
