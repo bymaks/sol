@@ -168,4 +168,21 @@ class System extends \yii\db\ActiveRecord
         return $result;
     }
 
+
+    public static function getMainImg(Goods $good){
+        $result = false;
+        if(!empty($good)){
+            $image = GoodsImages::find()->where(['goods_id'=>$good->id, 'status'=>1, 'main'=>1])->one();
+            if(!empty($image)){
+                $result = $image;
+            }
+            else{
+                $image = GoodsImages::find()->where(['goods_id'=>$good->id, 'status'=>1,])->orderBy(['id'=>SORT_DESC])->one();
+                if(!empty($image)){
+                    $result = $image;
+                }
+            }
+        }
+        return $image;
+    }
 }

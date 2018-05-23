@@ -179,7 +179,40 @@ function cancelBasket(uni) {
         error: function(responce){
             console.log('error');
             $('#cancelBasket').removeAttr('disabled');
-            loader('show');
+            loader('hide');
+            alert_messages('Ошибка', 2, false);
+        }
+    });
+}
+
+function delImage(imageId){
+    console.log('del image');
+
+    loader('show');
+    //показать прелоадер
+    var data = {};
+    data[param] = token;
+    data['imgId'] = imageId;
+    $.ajax({
+        url: '/ajax/del-image',
+        type: "post",
+        data: data,
+        success: function (response) {
+            //разблокируем Input
+            console.log('success');
+            loader('hide');
+            var result = JSON.parse(response);
+            if (result.status == 'true' && result.error == 0) {
+                location.reload();
+            }
+            else {
+                alert_messages(result.message, 2, false);
+            }
+            console.log('success');
+        },
+        error: function(responce){
+            console.log('error');
+            loader('hide');
             alert_messages('Ошибка', 2, false);
         }
     });
@@ -225,7 +258,7 @@ $(document).on('keyup','#search_goods',function () {
 
 //Добавить сертификат
 $(document).on('click', '#js-addCert', function () {
-   console.log('add season tiket');
+    console.log('add season tiket');
     if($('#cert').val().length>0){
 
         console.log('ajax');
@@ -259,6 +292,38 @@ $(document).on('click', '#js-addCert', function () {
             }
         });
     }
+});
+
+//Добавить сертификат
+$(document).on('click', '.js-set-main', function () {
+    console.log('set main');
+    loader('show');
+    var data = {};
+    data[param] = token;
+    data['imgId'] = $(this).attr('imgid');
+    data['goodId'] = $(this).attr('goodid');
+    $.ajax({
+        url: '/ajax/set-img-main',
+        type: "post",
+        data: data,
+        success: function(response) {
+            loader('hide');
+            var result = JSON.parse(response);
+            if(result.status=='true' && result.error ==0){
+                alert_messages(result.message,1, false);
+                location.reload();
+            }
+            else{
+                alert_messages(result.message,2, false);
+            }
+            console.log('success');
+        },
+        error:function(){
+            loader('hide');
+            alert_messages('Ошибка',2, false);
+        }
+    });
+
 });
 
 // Поиск;

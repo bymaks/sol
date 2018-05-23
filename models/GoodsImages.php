@@ -10,6 +10,7 @@ use Yii;
  * @property int $id
  * @property int $goods_id
  * @property string $path
+ * @property string $main
  * @property int $status
  *
  * @property Goods $goods
@@ -31,7 +32,7 @@ class GoodsImages extends \yii\db\ActiveRecord
     {
         return [
             [['goods_id', 'path'], 'required'],
-            [['goods_id', 'status'], 'integer'],
+            [['goods_id', 'main', 'status'], 'integer'],
             [['path'], 'string', 'max' => 256],
             [['goods_id'], 'exist', 'skipOnError' => true, 'targetClass' => Goods::className(), 'targetAttribute' => ['goods_id' => 'id']],
         ];
@@ -46,6 +47,7 @@ class GoodsImages extends \yii\db\ActiveRecord
             'id' => 'ID',
             'goods_id' => 'Goods ID',
             'path' => 'Path',
+            'main'=>'Main',
             'status' => 'Status',
         ];
     }
@@ -57,4 +59,6 @@ class GoodsImages extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Goods::className(), ['id' => 'goods_id']);
     }
+
+
 }

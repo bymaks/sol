@@ -15,7 +15,7 @@ $this->params['breadcrumbs'][] = $this->title;
 //TODO::добавить отключение товара и отоборажение смена цены так же
 ?>
 <div class="goods-index">
-    <?php $layoutGrid= '<div style="float: right;">'.Html::a('Добавить товар', ['create'], ['class' => 'btn btn-success']).'<too></too>{toolbar}</div>
+    <?php $layoutGrid= '<div style="float: right;">'.Html::a('Добавить товар', 'goods/create-tiket', ['class' => 'btn btn-success']).'<too></too>{toolbar}</div>
         {summary} 
         {items}
         {pager}
