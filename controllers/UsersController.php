@@ -44,7 +44,6 @@ class UsersController extends Controller
 
     public function actionIndex()
     {
-        //TODO поправить этот кусок
         if (!empty(Yii::$app->request->post('hasEditable'))) {
             //print_r(Yii::$app->request->post());
             $request = Yii::$app->request->post();

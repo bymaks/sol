@@ -105,7 +105,7 @@ class Users extends System
     }
 
     public function validPass($attribute, $params){
-        //TODO:: валидация пароля и поставить hash
+        // валидация пароля и поставить hash
         if(strlen($this->passwordNew)>0){
             if(strlen($this->confirmPassword)>0){
                 if(strcmp($this->confirmPassword, $this->passwordNew)==0) {
