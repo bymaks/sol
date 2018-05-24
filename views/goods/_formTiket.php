@@ -17,6 +17,7 @@ use \app\models\SeasonMinutePrice;
     <?= $form->field($model, 'minute_all')->dropDownList(ArrayHelper::map(SeasonMinutePrice::find()->where(['status'=>1])->all(), 'id', 'minute'), ['readonly'=>($model->isNewRecord?false:true)]) ?>
     <?= (!$model->isNewRecord?$form->field($model, 'minute_balance')->dropDownList(ArrayHelper::map(SeasonMinutePrice::find()->where(['status'=>1])->all(), 'id', 'minute'), ['readonly'=>true]):'') ?>
     <?= $form->field($model, 'comment')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'status')->checkbox() ?>
 
     <div class="form-group">
         <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success']) ?>
@@ -25,9 +26,12 @@ use \app\models\SeasonMinutePrice;
 
     if(!$model->isNewRecord){
         //вывести лог расхода минут
+        $transactions = $model->seasonTiketTransactions;
+        if(!empty($transactions)){
+            foreach ($transactions as $transaction){
+                echo Date('d.m.Y H:i:s', strtotime($transaction->create_at))." : списано минут - ".$transaction->minute." </br>";
+            }
+        }
     }
-
-
-
     ?>
 </div>

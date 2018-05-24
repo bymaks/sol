@@ -71,6 +71,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'value' => function($model){
                 return $model->good_count;
             },
+            'width'=>'15%',
             'hAlign' => GridView::ALIGN_CENTER,
             'editableOptions'=> [
                 'header'=>'Остаток',
@@ -90,11 +91,29 @@ $this->params['breadcrumbs'][] = $this->title;
             'format'=>'html'
         ],
         [
+            'class'=>'kartik\grid\EditableColumn',
             'attribute'=>'status',
             'label'=>'Статус',
+            'width'=>'20%',
             'value' => function($model){
                 return $model->status ? Html::tag('span', 'Да', ['data-label'=>'Status', 'class'=>'text-success']) :  Html::tag('span', 'Нет', ['data-label'=>'Status', 'class'=>'text-danger']);
             },
+            'hAlign' => GridView::ALIGN_LEFT,
+            'editableOptions'=> [
+                'header'=>'Остаток',
+                'inputType' => \kartik\editable\Editable::INPUT_HIDDEN,
+                'beforeInput' => function ($form, $widget){
+                    if( Yii::$app->user->can('Manager') || Yii::$app->user->can('Booker') ){
+                        echo '<label>Изменение статуса</label><br>';
+                        $stok = new \app\models\GoodsStok();
+                        echo $form->field($stok, 'status')->checkbox()->label('');
+                    }
+                    else{
+                        echo 'Недостаточно прав';
+                    }
+
+                },
+            ],
             'filterType'=>GridView::FILTER_SELECT2,
             'filter'=>$itemsStatusDel,
             'filterWidgetOptions'=>[

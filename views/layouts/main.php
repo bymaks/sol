@@ -83,7 +83,7 @@ Yii::$app->name = "Black Style"
             'items' => [
 
                 ['label' => 'Товары', 'url' => ['/goods/index']],
-                ['label' => 'Остатки', 'url' => ['/goods/index']],
+                ['label' => 'Остатки', 'url' => ['/goods/goods-stok']],
                 ['label' => 'Абонементы', 'url' => ['/goods/tikets']],
                 ['label' => 'Цены на абонементы', 'url' => ['/goods/season-minutes']],
                 ['label' => 'Точки продаж', 'url' => ['/shop/index']],

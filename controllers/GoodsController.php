@@ -14,6 +14,7 @@ use Yii;
 use app\models\Goods;
 use app\models\GoodsSearch;
 use yii\filters\AccessControl;
+use yii\helpers\Html;
 use yii\helpers\Json;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -148,7 +149,7 @@ class GoodsController extends Controller
                 $goodStok = GoodsStok::find()->where(['id'=>Yii::$app->request->post('editableKey')])->one();
                 if(!empty($goodStok)){
                     if($goodStok->load($request) && $goodStok->save(true)){
-                        $output = $goodStok->good_count;
+                        $output =  $request['editableAttribute']=='status'?($goodStok->status ? Html::tag('span', 'Да', ['data-label'=>'Status', 'class'=>'text-success']) :  Html::tag('span', 'Нет', ['data-label'=>'Status', 'class'=>'text-danger'])):$goodStok->good_count;
                         $message = 'Сохранено';
                     }
                     else{
@@ -181,7 +182,7 @@ class GoodsController extends Controller
 
         if(intval($id_changed)==1 || empty($search)){
             if ($model->load(Yii::$app->request->post()) && $model->save(true)) {
-                return $this->redirect(['goods-stok', 'id' => $model->id]);//TODO редирект на грид
+                return $this->redirect(['goods-stok', 'id' => $model->id]);//редирект на грид
             }
         }
 
@@ -236,7 +237,7 @@ class GoodsController extends Controller
     {
         if (($model = SeasonTikets::findOne($id)) !== null) {
             if ($model->load(Yii::$app->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'id' => $model->id]);
+                return $this->redirect('tikets' /* ['tikets','SeasonTiketsSearch[id]' => $model->id]*/);
             }
 
             return $this->render('updateTiket', [
@@ -285,4 +286,5 @@ class GoodsController extends Controller
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+
 }

@@ -167,7 +167,6 @@ class AjaxController  extends Controller
                         else{
                             unset($session['order']['items'][$params['goodId']]);
                         }
-                        //TODO: пересчитать цену скидку все пересчитать
                         //пересчитываем заказ
                         $session = System::refreshSummaryOrderInfo($session);
                         Yii::$app->session->set('order',$session);
@@ -209,6 +208,7 @@ class AjaxController  extends Controller
                 $order->minuts = (!empty($session['order']['minuts'])?$session['order']['minuts']:0);
                 $order->summ = (!empty($session['order']['summ'])?$session['order']['summ']:0);
                 $order->discont = (!empty($session['order']['discont'])?$session['order']['discont']:0);
+                $order->discont_minute = (!empty($session['order']['discontMinute'])?$session['order']['discontMinute']:0);
                 $order->comment = (!empty($session['order']['comment'])?$session['order']['comment']:NULL);
                 $order->status = 0;
                 if($order->save(true) && !empty($session['order']['items'])){

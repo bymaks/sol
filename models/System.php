@@ -142,12 +142,17 @@ class System extends \yii\db\ActiveRecord
                     if(!empty($item['goodId'])){
                         $good = Goods::find()->where(['id'=>$item['goodId']])->one();
                         if(!empty($good)){
-                            $summ += $good->price*$item['count'];
-                            if(in_array($good->category_id, [Yii::$app->params['categoryMinut']])){
+                            //$summ += $good->price*$item['count'];
+                            if(in_array($good->category_id, Yii::$app->params['categoryMinut'])){
                                 $minuts += $item['count'];
                                 //считаем минуты минус минуты с абонемента
-                                $summ += $good->price*( (($item['count']-$seasonTiket->minute_balance)<0?0:$item['count']-$seasonTiket->minute_balance));
-                                $discontMinute += $item['count'] - ( ( ($item['count']-$seasonTiket->minute_balance)<0?0:$item['count']-$seasonTiket->minute_balance));
+                                if(!empty($seasonTiket)){
+                                    $summ += $good->price*( (($item['count']-$seasonTiket->minute_balance)<0?0:$item['count']-$seasonTiket->minute_balance));
+                                    $discontMinute += $item['count'] - ( ( ($item['count']-$seasonTiket->minute_balance)<0?0:$item['count']-$seasonTiket->minute_balance));
+                                }
+                                else{
+                                    $summ += $good->price*$item['count'];
+                                }
                             }
                             else{
                                 $summ += $good->price*$item['count'];
@@ -161,7 +166,7 @@ class System extends \yii\db\ActiveRecord
         $result['order']['createBy']=Yii::$app->user->id;
         $result['order']['discont']=$discont;// скидак
         $result['order']['discontMinute']=$discontMinute;// скидак минут
-        $result['order']['seasonTiket'] = (!empty($orderSession['order']['seasonTiket'])?$orderSession['order']['seasonTiket']:false);
+        $result['order']['seasonTiket'] = (!empty($seasonTiket)?$seasonTiket->id:false);
         $result['order']['minuts'] = $minuts;
         $result['order']['summ'] = $summ;
         $result['order']['unique']=password_hash(rand(1,10000), PASSWORD_BCRYPT);
