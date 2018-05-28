@@ -20,14 +20,15 @@ use \kartik\file\FileInput;
 
     <?= $form->field($model, 'price')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'ci_id')->dropdownList(\yii\helpers\ArrayHelper::map(\app\models\GoodsCategory::find()->where(['status'=>1])->all(), 'id', 'name'))->label('Категория') ?>
+    <?= $form->field($model, 'category_id')->dropdownList(\yii\helpers\ArrayHelper::map(\app\models\GoodsCategory::find()->where(['status'=>1])->all(), 'id', 'name'))->label('Категория') ?>
 
     <?= $form->field($model, 'ci_id')->dropdownList(\yii\helpers\ArrayHelper::map(\app\models\GoodsCi::find()->where(['status'=>1])->all(), 'id', 'name'))->label('ЕМ') ?>
 
-    <?= $form->field($model, 'description')->widget(CKEditorWidget::className(), [
+    <?= $form->field($model, 'description')->textInput()?>
+    <?php /*= $form->field($model, 'description')->widget(CKEditorWidget::className(), [
         'options' => ['rows' => 6],
         'preset' => CKEditorPresets::STANDART,
-    ])->label('Текст') ?>
+    ])->label('Текст') */ ?>
 
     <?= $form->field($model, 'show_status')->checkbox() ?>
 
