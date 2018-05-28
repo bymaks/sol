@@ -10,7 +10,7 @@ $this->title = 'Цены на абонементы';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="season-minute-price-index">
-    <?php $layoutGrid= '<div style="float: right;">'.Html::a('Добавить цену', ['create-season-minute'], ['class' => 'btn btn-success']).'<too></too>{toolbar}</div>
+    <?php $layoutGrid= '<div style="float: right;">'.Html::a('Добавить цену', '/goods/create-season-minute', ['class' => 'btn btn-success']).'<too></too>{toolbar}</div>
         {summary} 
         {items}
         {pager}
