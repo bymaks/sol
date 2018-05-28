@@ -14,8 +14,16 @@ use \app\models\SeasonMinutePrice;
 
     <?php $form = ActiveForm::begin(); ?>
     <?= $form->field($model, 'tiket_id')->textInput(['maxlength' => true]) ?>
-    <?= $form->field($model, 'minute_all')->dropDownList(ArrayHelper::map(SeasonMinutePrice::find()->where(['status'=>1])->all(), 'id', 'minute'), ['readonly'=>($model->isNewRecord?false:true)]) ?>
-    <?= (!$model->isNewRecord?$form->field($model, 'minute_balance')->dropDownList(ArrayHelper::map(SeasonMinutePrice::find()->where(['status'=>1])->all(), 'id', 'minute'), ['readonly'=>true]):'') ?>
+    <?php
+    if($model->isNewRecord){
+        echo $form->field($model, 'minute_all')->dropDownList(ArrayHelper::map(SeasonMinutePrice::find()->where(['status'=>1])->all(), 'id', 'minute'),[]);
+    }
+    else{
+        echo $form->field($model, 'minute_all')->textInput(['disable'=>'disable']);
+        echo $form->field($model, 'minute_balance')->textInput([ 'disable'=>'disable']);
+    }
+    ?>
+
     <?= $form->field($model, 'comment')->textInput(['maxlength' => true]) ?>
     <?= $form->field($model, 'status')->checkbox() ?>
 
