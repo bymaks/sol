@@ -15,7 +15,7 @@ $this->params['breadcrumbs'][] = $this->title;
 //TODO::добавить отключение товара и отоборажение смена цены так же
 ?>
 <div class="goods-index">
-    <?php $layoutGrid= '<div style="float: right;">'.Html::a('Добавить товар', 'goods/create-tiket', ['class' => 'btn btn-success']).'<too></too>{toolbar}</div>
+    <?php $layoutGrid= '<div style="float: right;">'.Html::a('Добавить товар', '/goods/create', ['class' => 'btn btn-success']).'<too></too>{toolbar}</div>
         {summary} 
         {items}
         {pager}
@@ -43,7 +43,11 @@ $this->params['breadcrumbs'][] = $this->title;
             'label'=>'Категория товара',
             'width'=>'30%',
             'value' => function($model){
-                return $model->category->name;
+        	$result = '';
+        	if(!empty($model->category)){
+        	    $result = $model->category->name;
+        	}
+                return $result;
             },
             'filterType'=>GridView::FILTER_SELECT2,
             'filter'=>\yii\helpers\ArrayHelper::map(\app\models\GoodsCategory::find()->where(['status'=>1])->all(), 'id', 'name'),

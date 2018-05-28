@@ -42,7 +42,7 @@ class Goods extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'vendor_code', 'price', 'ci_id', 'description'], 'required', 'message'=>'Не может быть пустым'],
+            [['name', 'vendor_code', 'price', 'ci_id', ], 'required', 'message'=>'Не может быть пустым'],
             [['price'], 'number'],
             [['category_id', 'ci_id', 'show_status', 'create_by_user', 'update_by_user', 'status'], 'integer'],
             [['description'], 'string'],

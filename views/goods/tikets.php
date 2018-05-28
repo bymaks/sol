@@ -14,7 +14,7 @@ $this->title = 'Абонементы';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="season-tikets-index">
-    <?php $layoutGrid= '<div style="float: right;">'.Html::a('Добавить абоненмент', ['create-tiket'], ['class' => 'btn btn-success']).'<too></too>{toolbar}</div>
+    <?php $layoutGrid= '<div style="float: right;">'.Html::a('Добавить абоненмент', '/goods/create-tiket', ['class' => 'btn btn-success']).'<too></too>{toolbar}</div>
         {summary} 
         {items}
         {pager}
