@@ -34,6 +34,10 @@ Yii::$app->name = "Black Style"
     Modal::begin(['header' => '<h4></h4>',
         'closeButton' => ['tag' => 'button', 'label' => '&times;'],
         'id' => 'modal-global',
+        'size'=>Modal::SIZE_LARGE,
+        'bodyOptions'=>[
+            'class'=>'modal-body bgimage',
+        ],
         // 'size'=>'modal-sm',
     ]);
     Modal::end();
@@ -59,7 +63,7 @@ Yii::$app->name = "Black Style"
     <div class="col-sm-4 col-md-push-2 search-input">
         <div class="input-group">
             <input type="text" class="form-control js-value-search" placeholder="Введите номер сертификата">
-            <span class="input-group-btn"><button class="btn btn-default js-button-search" type="button">Поиск</button></span>
+            <span class="input-group-btn"><button class="btn btn-default js-button-search" id="js-button-search-id" type="button">Поиск</button></span>
         </div><!-- /input-group -->
 
     </div>

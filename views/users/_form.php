@@ -48,6 +48,7 @@ elseif(key($youRole)=='User'){
 
 
     <?=$form->field($model, 'gender')->DropDownList(ArrayHelper::map($gender,'id','name'));  ?>
+    <?=$form->field($model, 'shop_id')->DropDownList(ArrayHelper::map(\app\models\Shop::find()->where(['status'=>1])->all(),'id','name'));  ?>
 
     <?php /*= $form->field($model, 'birthday')->widget(DateControl::classname(), [
         'options' => ['placeholder' => 'День рождения'],

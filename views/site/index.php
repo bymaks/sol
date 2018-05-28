@@ -13,7 +13,7 @@ $this->title = 'Solarium v1.0.1';
                 <div class="panel-body">
                     <div class="form-group has-error">
                         <input type="text" class="form-control" id="search_goods" placeholder="Название товара">
-                        <p class="help-block ">Описание анйденых товаров</p>
+                        <p class="help-block ">Найденые товары:</p>
                     </div>
                     <div class="goods-items">
                         <?=  app\components\widgets\WSearchItem::widget(['goodId'=>1])?>

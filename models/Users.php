@@ -48,7 +48,7 @@ class Users extends System
     }
     public function rules(){
         return [
-            [['login', 'phone', 'first_name', 'second_name', 'password_hash', 'shop_id'], 'required'],
+            [['login', 'phone', 'first_name', 'second_name', 'shop_id'], 'required'],
             [['telegramm', 'gender', 'time_out', 'create_by_user', 'update_by_user', 'status'], 'integer'],
             [['birthday', 'created_at', 'updated_at'], 'safe'],
             [['login', 'email', 'first_name', 'second_name', 'last_name', 'password_reset_token', 'password_hash', 'auth_key','roleName'], 'string', 'max' => 255],

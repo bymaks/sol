@@ -331,7 +331,17 @@ $(document).on('click','.js-button-search',function () {
     var search = $('input.js-value-search').val();
     console.log(search);
     console.log('++');
-    window_global('#modal-global','ajax/search-input',{'search':true, 'value':search},'Поиск сертивикат');
+    window_global('#modal-global','ajax/search-input',{'search':true, 'value':search},'Сертификат');
+});
+
+
+$(document).on('keyup','.js-value-search',function () {
+    /*event.preventDefault();
+    // Number 13 is the "Enter" key on the keyboard
+    if (this.ke.keyCode === 13) {
+        // Trigger the button element with a click
+        document.getElement("js-button-search-id").click();
+    }*/
 });
 
 // Модальная окно (ГЛОБАЛЬНЫЙ МОЖНО ВЕЗДЕ ИСПОЛЬЗОВАТЬ);

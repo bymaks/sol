@@ -243,3 +243,8 @@ img.size-2 {
 .color-gold{
     color: #fffc20;
 }
+.bgimage{
+    background: url("/images/sert_back.jpg") no-repeat;
+    background-size: cover;
+    height: 400px;
+}

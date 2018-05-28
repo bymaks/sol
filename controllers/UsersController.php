@@ -94,7 +94,6 @@ class UsersController extends Controller
     {
         $model = new Users();
         $modelRole = AuthItem::find()->all();
-        var_dump(Yii::$app->request->post());
         if ($model->load(Yii::$app->request->post())) {
             if ($model->save(true)) {
                 $auth = AuthAssignment::find()->where(['user_id' => $model->id])->one();

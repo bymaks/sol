@@ -62,19 +62,20 @@ class WBasket extends \yii\base\Widget
         ?>
             </div><!--div col-md-6-->
             <div class="col-md-6">
-                <div class="img">
-                    <img class="size-1" src="https://cdn.pixabay.com/photo/2014/08/19/14/06/coupon-421600_960_720.jpg">
+                <div class="img form_group">
+                    <img class="size-1 img-responsive" src="/images/sert_back.jpg">
                     <div class="input-group text-center buttons ">
                         <input type="text" class="form-control" id="cert" value="<?=$seasonTiketId?>" placeholder="Введите номер сертификата">
                         <span class="input-group-btn"> <button class="btn-success btn" id="js-addCert">Подключить</button></span>
                     </div><!-- /input-group -->
                 </div>
+
                 <div class="total">
 
                     <div class="total-money">
                         <!--<div><b>Цена:</b> <span class="money"> р.</span></div>-->
                         <div><b>Скидка:</b> <span class="money text-danger"><?=(!empty($this->order['order']['discont'])?$this->order['order']['discont']:0)?> р.</span></div>
-                        <div><b>Скидка минут:</b> <span class="money text-danger"><?=(!empty($this->order['order']['discontMinute'])?$this->order['order']['discontMinute']:0)?> р.</span></div>
+                        <div><b>Скидка минут:</b> <span class="money text-danger"><?=(!empty($this->order['order']['discontMinute'])?$this->order['order']['discontMinute']:0)?> мин.</span></div>
                         <div class="result"><h4>Итого:</h4> <span class="money"><?=(!empty($this->order['order']['summ'])?$this->order['order']['summ']:0)?> р.</span></div>
                         <div class="text-right">
                             <button class=" btn-warning btn" id="cancelBasket" onclick="cancelBasket(<?=(!empty($this->order['order']['unique'])?"'".$this->order['order']['unique']."'":"'false'")?>);">Сброисить</button>
