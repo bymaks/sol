@@ -62,8 +62,8 @@ class WBasket extends \yii\base\Widget
         ?>
             </div><!--div col-md-6-->
             <div class="col-md-6">
-                <div class="img form_group">
-                    <img class="size-1 img-responsive" src="/images/sert_back.jpg">
+                <div class="img form_group bgimage">
+                    <!--<img class="size-1 img-responsive" src="/images/sert_back.jpg">-->
                     <div class="input-group text-center buttons ">
                         <input type="text" class="form-control" id="cert" value="<?=$seasonTiketId?>" placeholder="Введите номер сертификата">
                         <span class="input-group-btn"> <button class="btn-success btn" id="js-addCert">Подключить</button></span>
