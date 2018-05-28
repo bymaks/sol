@@ -19,8 +19,8 @@ use \app\models\SeasonMinutePrice;
         echo $form->field($model, 'minute_all')->dropDownList(ArrayHelper::map(SeasonMinutePrice::find()->where(['status'=>1])->all(), 'id', 'minute'),[]);
     }
     else{
-        echo $form->field($model, 'minute_all')->textInput(['disable'=>'disable']);
-        echo $form->field($model, 'minute_balance')->textInput([ 'disable'=>'disable']);
+        echo $form->field($model, 'minute_all')->textInput(['disabled'=>'disabled']);
+        echo $form->field($model, 'minute_balance')->textInput([ 'disabled'=>'disabled']);
     }
     ?>
 
