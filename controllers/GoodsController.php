@@ -33,27 +33,35 @@ class GoodsController extends Controller
                 'rules' => [
                     [
                         'actions' => [
-                            'create',
-                            'upload',
-                            'goods-stok',
-                            'stok-create',
+                            'create-season-minute',
+                            'update-season-minute',
+                        ],
+                        'allow' => true,
+                        'roles' => ['Admin','Booker'],
+                    ],
 
+                    [
+                        'actions' => [
+                            'create',
+                            'view',
+                            'update',
+                            'upload',
+                            'stok-create',
+                        ],
+                        'allow' => true,
+                        'roles' => ['Manager',],
+                    ],
+                    [
+                        'actions' => [
+                            'index',
+                            'goods-stok',
                             'tikets',
                             'create-tiket',
                             'update-tiket',
-
                             'season-minutes',
-                            'create-season-minute',
-                            'update-season-minute',
-
                         ],
                         'allow' => true,
-                        'roles' => ['Admin',],
-                    ],
-                    [
-                        'actions' => ['index', 'view', 'update'],
-                        'allow' => true,
-                        'roles' => ['Booker',],
+                        'roles' => ['Seller',],
                     ],
                 ],
             ],

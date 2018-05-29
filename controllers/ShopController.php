@@ -22,14 +22,9 @@ class ShopController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['create'],
+                        'actions' => ['index', 'create', 'view', 'update'],
                         'allow' => true,
-                        'roles' => ['Admin',],
-                    ],
-                    [
-                        'actions' => ['index', 'view', 'update'],
-                        'allow' => true,
-                        'roles' => ['Booker',],
+                        'roles' => ['Admin','Booker',],
                     ],
                 ],
             ],

@@ -46,12 +46,16 @@ class AjaxController  extends Controller
 
     //Поиск сретификат
     public function actionSearchInput() {
-        $result = $result ='<h1><span class="text-danger text-center">Ничего не найдено</span></h1><br>';
+        $result = $result ='<div class="center-text font-size-xxxl">Ничего не найдено</div>';
         if( !empty(Yii::$app->request->post('search')) && !empty(Yii::$app->request->post('value'))) {
             $tiket = SeasonTikets::find()->where(['like', 'tiket_id', Yii::$app->request->post('value')])->andWhere(['status'=>1])->one();
             if(!empty($tiket)){
-                $result ='<h1><span class="text-danger text-center">'.$tiket->tiket_id.'</span></h1><br>'
-                    .'<h3><span class="text-success text-center">'.$tiket->minute_balance.'</span></h3>';
+                $result =''
+                    .'<div class="center-text">'
+                        .'<span class="center-text font-size-xxxl">Абонемент: '.$tiket->tiket_id.'</span><br>'
+                        .'<span class="font-size-xxl">Баланс минут: '.$tiket->minute_balance.'</span>'
+                    .'</div>'
+                    ;
             }
         }
         return $result;
