@@ -218,6 +218,52 @@ function delImage(imageId){
     });
 }
 
+
+function searchTicket() {
+    var search = $('input.js-value-search').val();
+    console.log(search);
+    console.log('++');
+    window_global('#modal-global','ajax/search-input',{'search':true, 'value':search},'');
+}
+
+
+//Добавление серификата
+function addTicket(){
+    console.log('add season tiket');
+    if($('#cert').val().length>0){
+
+        console.log('ajax');
+        $('#js-addCert').attr('disable', 'disable');
+        loader('show');
+        var data = {};
+        data[param] = token;
+        data['certificate'] = $('#cert').val();
+        $.ajax({
+            url: '/ajax/add-season-tiket',
+            type: "post",
+            data: data,
+            success: function(response) {
+                //разблокируем Input
+                $('#js-addCert').removeAttr('disable');
+                loader('hide');
+                var result = JSON.parse(response);
+                if(result.status=='true' && result.error ==0){
+                    $('.basket_result').empty();
+                    $('.basket_result').html(result.html);
+                }
+                else{
+                    alert_messages(result.message,2, false);
+                }
+                console.log('success');
+            },
+            error:function(){
+                $('#js-addCert').removeAttr('disable');
+                loader('hide');
+                alert_messages('Ошибка',2, false);
+            }
+        });
+    }
+}
 //поиск товаров
 $(document).on('keyup','#search_goods',function () {
     console.log('search start');
@@ -257,44 +303,17 @@ $(document).on('keyup','#search_goods',function () {
 });
 
 //Добавить сертификат
-$(document).on('click', '#js-addCert', function () {
-    console.log('add season tiket');
-    if($('#cert').val().length>0){
-
-        console.log('ajax');
-        $('#js-addCert').attr('disable', 'disable');
-        loader('show');
-        var data = {};
-        data[param] = token;
-        data['certificate'] = $('#cert').val();
-        $.ajax({
-            url: '/ajax/add-season-tiket',
-            type: "post",
-            data: data,
-            success: function(response) {
-                //разблокируем Input
-                $('#js-addCert').removeAttr('disable');
-                loader('hide');
-                var result = JSON.parse(response);
-                if(result.status=='true' && result.error ==0){
-                    $('.basket_result').empty();
-                    $('.basket_result').html(result.html);
-                }
-                else{
-                    alert_messages(result.message,2, false);
-                }
-                console.log('success');
-            },
-            error:function(){
-                $('#js-addCert').removeAttr('disable');
-                loader('hide');
-                alert_messages('Ошибка',2, false);
-            }
-        });
+$(document).on('keyup', '#cert', function (e){
+    if(e.keyCode ==13){
+        addTicket()
     }
 });
 
-//Добавить сертификат
+$(document).on('click', '#js-addCert', function () {
+    addTicket();
+});
+
+//Добавить установить главную картинку
 $(document).on('click', '.js-set-main', function () {
     console.log('set main');
     loader('show');
@@ -328,20 +347,14 @@ $(document).on('click', '.js-set-main', function () {
 
 // Поиск;
 $(document).on('click','.js-button-search',function () {
-    var search = $('input.js-value-search').val();
-    console.log(search);
-    console.log('++');
-    window_global('#modal-global','ajax/search-input',{'search':true, 'value':search},'Сертификат');
+    searchTicket();
 });
 
-
-$(document).on('keyup','.js-value-search',function () {
-    /*event.preventDefault();
-    // Number 13 is the "Enter" key on the keyboard
-    if (this.ke.keyCode === 13) {
-        // Trigger the button element with a click
-        document.getElement("js-button-search-id").click();
-    }*/
+$(document).on('keyup','.js-value-search',function (e) {
+    if (e.keyCode == 13) {
+        console.log('yeah');
+        searchTicket();
+    }
 });
 
 // Модальная окно (ГЛОБАЛЬНЫЙ МОЖНО ВЕЗДЕ ИСПОЛЬЗОВАТЬ);

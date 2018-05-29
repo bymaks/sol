@@ -34,6 +34,7 @@ class WBasket extends \yii\base\Widget
             <div class="col-md-6">
         <?php
         $seasonTiketId = '';
+        $seasonHtml = '';
         if(!empty($this->order)){
             ?>
                 <div class="goods-items">
@@ -53,6 +54,12 @@ class WBasket extends \yii\base\Widget
                 $seasonTiket = SeasonTikets::find()->where(['id'=>$this->order['order']['seasonTiket'], 'status'=>1])->one();
                 if(!empty($seasonTiket)){
                     $seasonTiketId = $seasonTiket->tiket_id;
+                    $seasonHtml = ''
+                        .'<div class="center-text">'
+                            .'<span class="center-text font-size-xl">Абонемент: '.$seasonTiket->tiket_id.'</span><br>'
+                            .'<span class="font-size-l">Баланс минут: '.$seasonTiket->minute_balance.'</span><br>'
+                            .'<span class="font-size-l">Создан: '.Date('d.m.Y', strtotime($seasonTiket->create_at)).'</span>'
+                        .'</div>';
                 }
             }
 
@@ -64,12 +71,14 @@ class WBasket extends \yii\base\Widget
             <div class="col-md-6">
                 <div class="img form_group bgimage">
                     <!--<img class="size-1 img-responsive" src="/images/sert_back.jpg">-->
-                    <div class="input-group text-center buttons ">
-                        <input type="text" class="form-control" id="cert" value="<?=$seasonTiketId?>" placeholder="Введите номер сертификата">
-                        <span class="input-group-btn"> <button class="btn-success btn" id="js-addCert">Подключить</button></span>
-                    </div><!-- /input-group -->
-                </div>
+                    <!--<!-- /input-group -->
+                    <?=$seasonHtml?>
 
+                </div>
+                <div class="input-group text-center buttons ">
+                    <input type="text" class="form-control" id="cert" value="<?=$seasonTiketId?>" placeholder="Введите номер сертификата">
+                    <span class="input-group-btn"> <button class="btn-success btn" id="js-addCert">Подключить</button></span>
+                </div>
                 <div class="total">
 
                     <div class="total-money">

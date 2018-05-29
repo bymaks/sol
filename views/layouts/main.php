@@ -32,11 +32,14 @@ Yii::$app->name = "Black Style"
 <!--Modal Оплата-->
 <?php
     Modal::begin(['header' => '<h4></h4>',
-        'closeButton' => ['tag' => 'button', 'label' => '&times;'],
+        'closeButton' => ['tag' => 'button', 'label' => '&times;', 'style'=>'color:#ffffff'],
         'id' => 'modal-global',
         'size'=>Modal::SIZE_LARGE,
         'bodyOptions'=>[
             'class'=>'modal-body bgimage',
+        ],
+        'headerOptions'=>[
+            'class'=>'modal-header modal-backgroud-header '
         ],
         // 'size'=>'modal-sm',
     ]);

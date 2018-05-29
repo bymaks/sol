@@ -146,12 +146,12 @@ a.desc:after {
 
 .info-order .img {
     width: 100%;
-    max-height: 400px;
+    max-height: 250px;
     overflow: hidden;
     position: relative;
 }
 .info-order .buttons {
-    position: absolute;
+    /*position: absolute;*/
     bottom: 10px;
     right: 0;
     left: 0;
@@ -247,4 +247,28 @@ img.size-2 {
     background: url("/images/sert_back.jpg") no-repeat;
     background-size: cover;
     height: 400px;
+}
+.center-text{
+    text-align: center;
+}
+.font-size-xxxl{
+    font-size: 50pt;
+    color: #fd0003;
+}
+.font-size-xxl{
+    font-size: 35pt;
+    color: #caa44f;
+}
+.modal-backgroud-header{
+    padding: 15px;
+    border-bottom: 0px solid #000000;
+    background-color: #000000;
+}
+.font-size-xl{
+    font-size: 27pt;
+    color: #fd0003;
+}
+.font-size-l{
+    font-size: 15pt;
+    color: #caa44f;
 }
