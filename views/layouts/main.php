@@ -95,6 +95,7 @@ Yii::$app->name = "Black Style"
                 ['label' => 'Цены на абонементы', 'url' => ['/goods/season-minutes']],
                 ['label' => 'Точки продаж', 'url' => ['/shop/index']],
                 ['label' => 'Пользователи', 'url' => ['/users/index']],
+                ['label' => 'Заказы', 'url' => ['/report/orders']],
 
                 Yii::$app->user->isGuest ? (
                 ['label' => 'Вход', 'url' => ['/site/login']]

@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\OrderItemSearch;
 use app\models\OrderShop;
 use app\models\OrderShopSearch;
 use Yii;
@@ -22,7 +23,7 @@ class ReportController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['orders',],
+                        'actions' => ['orders','items'],
                         'allow' => true,
                         'roles' => ['Admin','Booker',],
                     ],
@@ -34,8 +35,19 @@ class ReportController extends Controller
     public function actionOrders()
     {
         $params = Yii::$app->request->queryParams;
+
+        if(empty($params['dateStart']) && empty($params['dateEnd'])){
+            $params['dateStart'] = Date('Y-m-d 00:00:00', strtotime('-1 week', time()));
+            $params['dateEnd'] = Date('Y-m-d 23:59:59', time());
+        }
+        else{
+            $params['dateStart'] = Date('Y-m-d 00:00:00', strtotime($params['dateStart']));
+            $params['dateEnd'] = Date('Y-m-d 23:59:59', strtotime($params['dateEnd']));
+        }
+
         $searchModel = new OrderShopSearch();
         $dataProvider = $searchModel->search($params);
+
 
         return $this->render('orders', [
             'searchModel' => $searchModel,
@@ -45,40 +57,26 @@ class ReportController extends Controller
     }
 
 
-    public function actionCreate()
+    public function actionItems()
     {
-        $model = new Shop();
+        $params = Yii::$app->request->queryParams;
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if(empty($params['dateStart']) && empty($params['dateEnd'])){
+            $params['dateStart'] = Date('Y-m-d 00:00:00', strtotime('-1 week', time()));
+            $params['dateEnd'] = Date('Y-m-d 23:59:59', time());
+        }
+        else{
+            $params['dateStart'] = Date('Y-m-d 00:00:00', strtotime($params['dateStart']));
+            $params['dateEnd'] = Date('Y-m-d 23:59:59', strtotime($params['dateEnd']));
         }
 
-        return $this->render('create', [
-            'model' => $model,
+        $searchModel = new OrderItemSearch();
+        $dataProvider = $searchModel->search($params);
+
+        return $this->render('items', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+            'params'=>$params,
         ]);
-    }
-
-
-    public function actionUpdate($id)
-    {
-        $model = $this->findModel($id);
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        }
-
-        return $this->render('update', [
-            'model' => $model,
-        ]);
-    }
-
-
-    protected function findModel($id)
-    {
-        if (($model = Shop::findOne($id)) !== null) {
-            return $model;
-        }
-
-        throw new NotFoundHttpException('The requested page does not exist.');
     }
 }

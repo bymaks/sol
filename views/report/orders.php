@@ -162,7 +162,7 @@ $this->params['breadcrumbs'][] = $this->title;
             if(!empty($model->discont)){
                 $discount = $model->discont;
             }
-            return number_format($result, 0, '.', ' ').' р. ('.number_format($discount, 0, '.', ' ').' р.)';
+            return number_format($result, 0, '.', ' ').' р. ('.number_format($discount, 0, '.', ' ').') р.';
         },
         'pageSummary'=>function ($summary, $data, $widget) {
             $summ =0;
