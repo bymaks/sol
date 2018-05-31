@@ -71,7 +71,7 @@ class ReportController extends Controller
         }
 
         $searchModel = new OrderItemSearch();
-        $dataProvider = $searchModel->search($params);
+        $dataProvider = $searchModel->searchGroup($params);
 
         return $this->render('items', [
             'searchModel' => $searchModel,

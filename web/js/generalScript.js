@@ -383,3 +383,8 @@ function window_global(name,url,objPost,title) {
 
     return false;
 }
+
+$(document).on("change", "#ShopId", function(e) {
+    $('#form-vertical').submit();
+    console.log('send_form');
+});
