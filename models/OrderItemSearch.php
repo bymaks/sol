@@ -108,10 +108,13 @@ GROUP by order_item.good_id
             ->andWhere(['order_shop.status'=>1])
             ->andWhere('    order_item.order_shop_id = order_shop.id and  
 		                    goods.id = order_item.good_id and 
-                            goods_stok.shop_id = order_shop.shop_id');
-        if(isset($params['shop_id']) && is_numeric($params['shop_id'])){
-            $query->andWhere(['order_shop.shop_id'=>$params['shop_id']]);
+                            goods_stok.shop_id = order_shop.shop_id')
+            ->groupBy('order_item.good_id');
+        if(!empty($params['Shop']['id'])  && is_numeric($params['Shop']['id'])){
+            $query->andWhere(['order_shop.shop_id'=>$params['Shop']['id']]);
         }
+
+
         //TODO:добавить поиск по названию товара
 
         $dataProvider = new ActiveDataProvider([
@@ -119,6 +122,11 @@ GROUP by order_item.good_id
         ]);
 
         $this->load($params);
+
+        if(!empty($this->goodName)){
+            $query->andWhere(['or', ['like', 'goods.name', $this->goodName], ['like', 'goods.vendor_code', $this->goodName] ]);
+        }
+
 
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
@@ -137,6 +145,7 @@ GROUP by order_item.good_id
             //'discont' => $this->discont,
             //'status' => $this->status,
         ]);
+        //System::mesprint($query->createCommand()->getRawSql());die();
 
         return $dataProvider;
     }

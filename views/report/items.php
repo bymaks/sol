@@ -44,6 +44,13 @@ $this->params['breadcrumbs'][] = $this->title;
             {input2}'
         ]);?>
     </div>
+    <div class="form-group row">
+        <div class="col-sm-4">
+            <?=Html::label('Точка продаж')?><br>
+            <?=Html::dropDownList('Shop[id]', (!empty($params['Shop']['id'])?$params['Shop']['id']:NULL), ArrayHelper::map(\app\models\Shop::find()->where(['status'=>1])->asArray()->all(), 'id', 'name'), ['prompt'=>'Точка не выбрана', 'class'=>'form-control col-md-6', 'id'=>'ShopId'])?>
+        </div>
+    </div>
+    <div class="clearfix"></div>
     <div class="form-group" style="float: right;">
         <?=Html::submitButton('Сформировать', ['class' => 'btn btn-primary']);?>
     </div>
