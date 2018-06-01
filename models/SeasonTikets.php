@@ -22,6 +22,10 @@ use Yii;
  */
 class SeasonTikets extends \yii\db\ActiveRecord
 {
+    public $goodName;
+    public $saleCount;
+    public $summSell;
+    public $stok;
     /**
      * @inheritdoc
      */

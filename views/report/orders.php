@@ -19,7 +19,13 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <h4><?= Html::encode($this->title)?>. Сформирован <?=date('d.m.Y H:i');?></h4>
 <div class="order-shop-index">
-
+    <div class="calendar-fast">
+        <a class="dashed" href="<?=Url::to(['/report/orders', 'dateStart' => Date("Y-m-d"), 'dateEnd' => Date("Y-m-d")]);?>">Сегодня</a> |
+        <a class="dashed" href="<?=Url::to(['/report/orders', 'dateStart' => Date('Y-m-d', strtotime('-1 day')), 'dateEnd' => Date('Y-m-d', strtotime('-1 day'))]);?>">Вчера</a> |
+        <a class="dashed" href="<?=Url::to(['/report/orders', 'dateStart' => Date('Y-m-d', strtotime('-2 day')), 'dateEnd' => Date('Y-m-d', strtotime('-2 day'))]);?>">Позавчера</a> |
+        <a class="dashed" href="<?=Url::to(['/report/orders', 'dateStart' => Date('Y-m-d', strtotime('-1 week')), 'dateEnd' => Date('Y-m-d')]);?>">Прош. неделя</a> |
+        <a class="dashed" href="<?=Url::to(['/report/orders', 'dateStart' => Date('Y-m-d', strtotime('-1 month')), 'dateEnd' => Date("Y-m-d")]);?>">Прош. месяц</a>
+    </div>
     <?php
     $form = ActiveForm::begin([
         'id' => 'form-vertical',
