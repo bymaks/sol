@@ -61,6 +61,7 @@ class SeasonTiketsSearch extends SeasonTikets
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
+            //'tiket_id' =>$this->tiket_id,
             'minute_all' => $this->minute_all,
             'minute_balance' => $this->minute_balance,
             'create_by_user' => $this->create_by_user,
@@ -70,6 +71,7 @@ class SeasonTiketsSearch extends SeasonTikets
             'status' => $this->status,
         ]);
 
+        $query->andFilterWhere(['like', 'tiket_id', $this->tiket_id]);
         $query->andFilterWhere(['like', 'comment', $this->comment]);
 
         return $dataProvider;

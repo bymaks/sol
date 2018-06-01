@@ -56,7 +56,7 @@ Yii::$app->name = "Black Style"
 <div class="wrap">
     <?php
     NavBar::begin([
-        'brandLabel' => Yii::$app->name,
+        'brandLabel' =>  '<img src="/images/logo.png" style="height:37px ;">',//Yii::$app->name,
         'brandUrl' => Yii::$app->homeUrl,
         'options' => [
             'class' => 'navbar-inverse navbar-fixed-top',

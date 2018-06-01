@@ -244,8 +244,10 @@ img.size-2 {
     color: #fffc20;
 }
 .bgimage{
-    background: url("/images/sert_back.jpg") no-repeat;
-    background-size: cover;
+    background: url("/images/sert_back.png") no-repeat;
+    background-color: #000;
+    background-position: bottom;
+    background-size: contain;
     height: 400px;
 }
 .center-text{
@@ -271,4 +273,16 @@ img.size-2 {
 .font-size-l{
     font-size: 15pt;
     color: #caa44f;
+}
+.navbar-inverse {
+    background-color: #000;
+    border-color: #000;
+}
+.panel-primary {
+    border-color: #caa44f;
+}
+.panel-primary > .panel-heading {
+    color: #fff;
+    background-color: #caa44f;
+    border-color: #caa44f;
 }

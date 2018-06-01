@@ -6,6 +6,7 @@ use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\models\OrderItem;
+use app\models\SeasonTikets;
 
 /**
  * OrderItemSearch represents the model behind the search form of `app\models\OrderItem`.
@@ -93,6 +94,14 @@ WHERE order_shop.`create_at` BETWEEN '2018-05-30 00:00:00.000000' AND '2018-05-3
 		goods.id = order_item.good_id and
         goods_stok.shop_id = order_shop.shop_id
 GROUP by order_item.good_id
+        union
+        SELECT 'Абонименты' as 'goodName',
+        sum(season_tikets.minute_all) as 'saleCount',
+        sum(season_tikets.price) as 'summSell',
+        '0' as 'stok'
+FROM season_tikets, users
+WHERE season_tikets.create_at BETWEEN '2018-05-30 00:00:00.000000' AND '2018-05-31 00:00:00.000000' AND
+	users.id = season_tikets.create_by_user
         */
 
         $query = OrderItem::find()
@@ -110,15 +119,30 @@ GROUP by order_item.good_id
 		                    goods.id = order_item.good_id and 
                             goods_stok.shop_id = order_shop.shop_id')
             ->groupBy('order_item.good_id');
+
+
+        $queryTiket = SeasonTikets::find()
+            ->select(['goodName'=>'season_tikets.status',
+                'saleCount'=>'sum(season_tikets.minute_all)',
+                'summSell'=>'sum(season_tikets.price)',
+                'stok'=>'season_tikets.status',
+            ])
+            ->from('season_tikets, users')
+            ->where(['season_tikets.status'=>1])
+            ->andWhere(['between', 'season_tikets.create_at', Date('Y-m-d 00:00:00', strtotime($params['dateStart'])), Date('Y-m-d 23:59:59', strtotime($params['dateEnd'])) ])
+            ->andWhere('users.id = season_tikets.create_by_user');//->createCommand()->getRawSql();
+
+
+
         if(!empty($params['Shop']['id'])  && is_numeric($params['Shop']['id'])){
             $query->andWhere(['order_shop.shop_id'=>$params['Shop']['id']]);
+            $queryTiket->andWhere(['users.shop_id'=>$params['Shop']['id']]);
         }
-
-
+        $queryTiket->union($query, true);
         //TODO:добавить поиск по названию товара
 
         $dataProvider = new ActiveDataProvider([
-            'query' => $query,
+            'query' => $queryTiket,
         ]);
 
         $this->load($params);
