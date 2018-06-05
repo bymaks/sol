@@ -146,7 +146,6 @@ Yii::$app->name = "Black Style"
     <br>
     <br>
     <br>
-    <br>
     <div class="container-fluid">
 
         <?= Breadcrumbs::widget([

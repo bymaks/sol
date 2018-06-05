@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\models\OrderItemSearch;
 use app\models\OrderShop;
 use app\models\OrderShopSearch;
+use app\models\Users;
 use Yii;
 use app\models\Shop;
 use app\models\ShopSearch;
@@ -23,9 +24,14 @@ class ReportController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['orders','items'],
+                        'actions' => ['orders',],
                         'allow' => true,
                         'roles' => ['Admin','Booker',],
+                    ],
+                    [
+                        'actions' => ['items'],
+                        'allow' => true,
+                        'roles' => ['Seller',],
                     ],
                 ],
             ],
@@ -34,8 +40,8 @@ class ReportController extends Controller
 
     public function actionOrders()
     {
-        $params = Yii::$app->request->queryParams;
 
+        $params = Yii::$app->request->queryParams;
         if(empty($params['dateStart']) && empty($params['dateEnd'])){
             $params['dateStart'] = Date('Y-m-d 00:00:00', strtotime('-1 week', time()));
             $params['dateEnd'] = Date('Y-m-d 23:59:59', time());
@@ -59,15 +65,23 @@ class ReportController extends Controller
 
     public function actionItems()
     {
-        $params = Yii::$app->request->queryParams;
+        if(Yii::$app->user->can('Admin')) {
 
-        if(empty($params['dateStart']) && empty($params['dateEnd'])){
-            $params['dateStart'] = Date('Y-m-d 00:00:00', strtotime('-1 week', time()));
-            $params['dateEnd'] = Date('Y-m-d 23:59:59', time());
+            $params = Yii::$app->request->queryParams;
+
+            if (empty($params['dateStart']) && empty($params['dateEnd'])) {
+                $params['dateStart'] = Date('Y-m-d 00:00:00', strtotime('-1 week', time()));
+                $params['dateEnd'] = Date('Y-m-d 23:59:59', time());
+            } else {
+                $params['dateStart'] = Date('Y-m-d 00:00:00', strtotime($params['dateStart']));
+                $params['dateEnd'] = Date('Y-m-d 23:59:59', strtotime($params['dateEnd']));
+            }
         }
         else{
-            $params['dateStart'] = Date('Y-m-d 00:00:00', strtotime($params['dateStart']));
-            $params['dateEnd'] = Date('Y-m-d 23:59:59', strtotime($params['dateEnd']));
+
+            $params['dateStart'] = Date('Y-m-d 00:00:00', time());
+            $params['dateEnd'] = Date('Y-m-d 23:59:59', time());
+            $params['Shop']['id']= Users::find()->where(['id'=>Yii::$app->user->id])->one()->shop_id;
         }
 
         $searchModel = new OrderItemSearch();

@@ -32,7 +32,7 @@ class AjaxController  extends Controller
                     [
                         'actions' => ['search-goods','add-good', 'remove-good', 'create-order', 'cancel-basket', 'add-season-tiket', 'search-input', 'set-img-main', 'del-image'],
                         'allow' => true,
-                        'roles' => ['seller',],
+                        'roles' => ['Seller',],
                     ],
                     [
                         'actions' => ['index', 'view', 'update'],
@@ -126,27 +126,41 @@ class AjaxController  extends Controller
                 if(!empty($goodStok) && $goodStok->good_count>0){
                     $session = Yii::$app->session->get('order');
                     $goodCountCurrent = 0;
-                    if(!empty($session['order']['items'][$good->id])){
-                        $goodCountCurrent = $session['order']['items'][$good->id]['count'];
+                    $flagAdd = true;
+                    if(!empty($session['order']['items'])){
+                        $goodsInOrder = array_keys ($session['order']['items']);
+                        $goodInBasket = Goods::find()->where(['id'=>$goodsInOrder, 'category_id'=>Yii::$app->params['categoryMinut'], 'status'=>1])->all();
+                        if( !in_array($good->id, array_column($goodInBasket,'id') ) && in_array($good->category_id, Yii::$app->params['categoryMinut'])){
+                            $flagAdd = false;
+                        }
                     }
-                    if(($goodCountCurrent+1)<=$goodStok->good_count){
-                        // добавляем к заказу
+                    if($flagAdd){
                         if(!empty($session['order']['items'][$good->id])){
-                            $session['order']['items'][$good->id]['count']++;
+                            $goodCountCurrent = $session['order']['items'][$good->id]['count'];
+                        }
+                        if(($goodCountCurrent+1)<=$goodStok->good_count){
+                            // добавляем к заказу
+                            //проверяем если в заказе уже есть минуты то не добавляем
+                            if(!empty($session['order']['items'][$good->id])){
+                                $session['order']['items'][$good->id]['count']++;
+                            }
+                            else{
+                                $session['order']['items'][$good->id]= [
+                                    'count'=>1,
+                                    'goodId'=>$good->id,
+                                ];
+                            }
+                            //пересчитываем заказ
+                            $session = System::refreshSummaryOrderInfo($session);
+                            Yii::$app->session->set('order',$session);
+                            $result =['status'=>'true', 'message'=>'Добавлен', 'error'=>0, 'html'=>WBasket::widget(['order'=>$session]), ];
                         }
                         else{
-                            $session['order']['items'][$good->id]= [
-                                'count'=>1,
-                                'goodId'=>$good->id,
-                            ];
+                            $result =['status'=>'false', 'message'=>'На складе больше нет', 'error'=>2003, 'html'=>'', ];
                         }
-                        //пересчитываем заказ
-                        $session = System::refreshSummaryOrderInfo($session);
-                        Yii::$app->session->set('order',$session);
-                        $result =['status'=>'true', 'message'=>'Добавлен', 'error'=>0, 'html'=>WBasket::widget(['order'=>$session]), ];
                     }
                     else{
-                        $result =['status'=>'false', 'message'=>'На складе больше нет', 'error'=>2003, 'html'=>'', ];
+                        $result =['status'=>'false', 'message'=>'Другие минуты в другой заказ', 'error'=>2007, 'html'=>'', ];
                     }
                 }
                 else{

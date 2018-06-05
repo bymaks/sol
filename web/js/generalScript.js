@@ -223,7 +223,9 @@ function searchTicket() {
     var search = $('input.js-value-search').val();
     console.log(search);
     console.log('++');
+    $('input.js-value-search').val('');
     window_global('#modal-global','ajax/search-input',{'search':true, 'value':search},'');
+
 }
 
 
