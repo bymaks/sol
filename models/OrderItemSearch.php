@@ -111,7 +111,7 @@ WHERE season_tikets.create_at BETWEEN '2018-05-30 00:00:00.000000' AND '2018-05-
                 'summSell'=>'sum(order_item.good_price*order_item.good_count)',
                 'stok'=>'goods_stok.good_count',
             ])
-            ->from('order_shop, order_item, shop ,goods')
+            ->from('order_shop, order_item, goods')
             ->leftJoin('goods_stok', 'goods_stok.good_id = goods.id ')
             ->where(['between', 'order_shop.create_at',Date('Y-m-d 00:00:00', strtotime($params['dateStart'])), Date('Y-m-d 23:59:59', strtotime($params['dateEnd']))])
             ->andWhere(['order_shop.status'=>1])
@@ -122,15 +122,16 @@ WHERE season_tikets.create_at BETWEEN '2018-05-30 00:00:00.000000' AND '2018-05-
 
 
         $queryTiket = SeasonTikets::find()
-            ->select(['goodName'=>'season_tikets.status',
-                'saleCount'=>'sum(season_tikets.minute_all)',
+            ->select(['goodName'=>'season_tikets.minute_all',
+                'saleCount'=>'count(season_tikets.minute_all)',
                 'summSell'=>'sum(season_tikets.price)',
-                'stok'=>'season_tikets.status',
+                'stok'=>'(season_tikets.status-1000)',
             ])
             ->from('season_tikets, users')
             ->where(['season_tikets.status'=>1])
             ->andWhere(['between', 'season_tikets.create_at', Date('Y-m-d 00:00:00', strtotime($params['dateStart'])), Date('Y-m-d 23:59:59', strtotime($params['dateEnd'])) ])
-            ->andWhere('users.id = season_tikets.create_by_user');//->createCommand()->getRawSql();
+            ->andWhere('users.id = season_tikets.create_by_user')
+            ->groupBy('season_tikets.minute_all');
 
 
 
@@ -143,6 +144,9 @@ WHERE season_tikets.create_at BETWEEN '2018-05-30 00:00:00.000000' AND '2018-05-
 
         $dataProvider = new ActiveDataProvider([
             'query' => $queryTiket,
+            'pagination' => [
+                'pageSize' => 50,
+            ],
         ]);
 
         $this->load($params);

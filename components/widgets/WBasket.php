@@ -37,7 +37,7 @@ class WBasket extends \yii\base\Widget
         $seasonHtml = '';
         if(!empty($this->order)){
             ?>
-                <div class="goods-items">
+                <div class="goods-items-basket">
                 <?php
                 if(!empty($this->order['order']['items'])){
                     foreach ($this->order['order']['items'] as $item){

@@ -80,8 +80,8 @@ $this->params['breadcrumbs'][] = $this->title;
         'width'=>'30%',
         'value' => function($model){
             $result = $model->goodName;
-            if($model->goodName==1){
-                $result = 'Абонименты';
+            if($model->stok==-999){
+                $result = 'Абонименты '.$model->goodName;
             }
             return $result;
         },
@@ -96,13 +96,20 @@ $this->params['breadcrumbs'][] = $this->title;
         'value' => function($model){
             return number_format($model->saleCount, 0, '.', ' ').' шт.';
         },
-        'pageSummary'=>function ($summary, $data, $widget) {
+        'pageSummary'=>function ($summary, $data, $widget) use ($params) {
             $summ =0;
             foreach ($data as $val){
                 $summ += intval(preg_replace('/[^\d]+/','',$val));
-
             }
-            return number_format($summ, 0, '.', ' ').' шт.';
+            $mintesAll = \app\models\OrderShop::find()->where(['between', 'order_shop.create_at',Date('Y-m-d 00:00:00', strtotime($params['dateStart'])), Date('Y-m-d 23:59:59', strtotime($params['dateEnd']))])
+                ->andWhere(['status'=>1])->sum('minuts');
+            $mintesDiscont = \app\models\OrderShop::find()->where(['between', 'order_shop.create_at',Date('Y-m-d 00:00:00', strtotime($params['dateStart'])), Date('Y-m-d 23:59:59', strtotime($params['dateEnd']))])
+                ->andWhere(['status'=>1])->sum('discont_minute');
+
+            return 'Всего: '.number_format($summ, 0, '.', ' ').' шт. <br>'
+                .'Минуты за деньги: '.number_format(($mintesAll-$mintesDiscont), 0, '.', ' ').'<br>'
+                .'Минуты по Аб: '.number_format($mintesDiscont, 0, '.', ' ')
+                ;
         },
         'pageSummaryFunc'=>GridView::F_SUM,
         'mergeHeader'=>true,
@@ -117,13 +124,26 @@ $this->params['breadcrumbs'][] = $this->title;
         'value' => function($model){
             return number_format($model->summSell, 0, '.', ' ').' р.';
         },
-        'pageSummary'=>function ($summary, $data, $widget) {
+        'pageSummary'=>function ($summary, $data, $widget)  use ($params) {
             $summ =0;
             foreach ($data as $val){
                 $summ += intval(preg_replace('/[^\d]+/','',$val));
-
             }
-            return number_format($summ, 0, '.', ' ').' р.';
+
+            $summarySells = \app\models\OrderItem::find()
+                ->select([
+                    'minuteSum'=>'(sum(order_shop.minuts) - sum(order_shop.discont_minute))*order_item.good_price',
+                ])
+                ->from('order_shop, order_item, goods')
+                ->where(['between', 'order_shop.create_at',Date('Y-m-d 00:00:00', strtotime($params['dateStart'])), Date('Y-m-d 23:59:59', strtotime($params['dateEnd']))])
+                ->andWhere(['order_shop.status'=>1])
+                ->andWhere('order_item.order_shop_id = order_shop.id and  
+		                    goods.id = order_item.good_id')
+                ->andWhere(['goods.category_id'=>Yii::$app->params['categoryMinut']])
+                ->asArray()->one();
+            return 'Всего: '.number_format($summ, 0, '.', ' ').' р. <br>'
+                    .'Минут: ' . (!empty($summarySells)?$summarySells['minuteSum']:0).'<br>'
+                    .'Доп товары: '.number_format(($summ-(!empty($summarySells)?$summarySells['minuteSum']:0)), 0, '.', ' ').' р.';
         },
         'pageSummaryFunc'=>GridView::F_SUM,
         'mergeHeader'=>true,
@@ -137,7 +157,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'width'=>'30%',
         'value' => function($model){
             $result = number_format($model->stok, 0, '.', ' ').' шт.';
-            if($model->goodName==1){
+            if($model->stok==-999){
                 $result = 'Неограничено';
             }
             return $result;
