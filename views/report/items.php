@@ -97,14 +97,21 @@ $this->params['breadcrumbs'][] = $this->title;
             return number_format($model->saleCount, 0, '.', ' ').' шт.';
         },
         'pageSummary'=>function ($summary, $data, $widget) use ($params) {
+            //\app\models\System::mesprint($params);
             $summ =0;
             foreach ($data as $val){
                 $summ += intval(preg_replace('/[^\d]+/','',$val));
             }
-            $mintesAll = \app\models\OrderShop::find()->where(['between', 'order_shop.create_at',Date('Y-m-d 00:00:00', strtotime($params['dateStart'])), Date('Y-m-d 23:59:59', strtotime($params['dateEnd']))])
-                ->andWhere(['status'=>1])->sum('minuts');
-            $mintesDiscont = \app\models\OrderShop::find()->where(['between', 'order_shop.create_at',Date('Y-m-d 00:00:00', strtotime($params['dateStart'])), Date('Y-m-d 23:59:59', strtotime($params['dateEnd']))])
-                ->andWhere(['status'=>1])->sum('discont_minute');
+            $query =  \app\models\OrderShop::find()->where(['between', 'order_shop.create_at',Date('Y-m-d 00:00:00', strtotime($params['dateStart'])), Date('Y-m-d 23:59:59', strtotime($params['dateEnd']))])
+                ->andWhere(['status'=>1]);
+            if(!empty($params['Shop']['id']) && is_numeric($params['Shop']['id'])){
+                $query->andWhere(['shop_id'=>$params['Shop']['id']]);
+            }
+            $mintesAll = $query->sum('minuts');
+                /*\app\models\OrderShop::find()->where(['between', 'order_shop.create_at',Date('Y-m-d 00:00:00', strtotime($params['dateStart'])), Date('Y-m-d 23:59:59', strtotime($params['dateEnd']))])
+                ->andWhere(['status'=>1])->sum('minuts');*/
+            $mintesDiscont = $query->sum('discont_minute');/*\app\models\OrderShop::find()->where(['between', 'order_shop.create_at',Date('Y-m-d 00:00:00', strtotime($params['dateStart'])), Date('Y-m-d 23:59:59', strtotime($params['dateEnd']))])
+                ->andWhere(['status'=>1])->sum('discont_minute');*/
 
             return 'Всего: '.number_format($summ, 0, '.', ' ').' шт. <br>'
                 .'Минуты за деньги: '.number_format(($mintesAll-$mintesDiscont), 0, '.', ' ').'<br>'
@@ -136,14 +143,24 @@ $this->params['breadcrumbs'][] = $this->title;
                 ])
                 ->from('order_shop, order_item, goods')
                 ->where(['between', 'order_shop.create_at',Date('Y-m-d 00:00:00', strtotime($params['dateStart'])), Date('Y-m-d 23:59:59', strtotime($params['dateEnd']))])
-                ->andWhere(['order_shop.status'=>1])
-                ->andWhere('order_item.order_shop_id = order_shop.id and  
-		                    goods.id = order_item.good_id')
-                ->andWhere(['goods.category_id'=>Yii::$app->params['categoryMinut']])
-                ->asArray()->one();
+                ->andWhere(['order_shop.status'=>1]);
+
+            if(!empty($params['Shop']['id']) && is_numeric($params['Shop']['id'])){
+                $summarySells->andWhere(['order_shop.shop_id'=>$params['Shop']['id']]);
+            }
+            $summarySells
+                ->andWhere('order_item.order_shop_id = order_shop.id and  goods.id = order_item.good_id')
+                ->andWhere(['goods.category_id'=>Yii::$app->params['categoryMinut']]);
+
+            $sql = $summarySells->createCommand()->getRawSql();
+            $summarySellsEx = Yii::$app->db->createCommand($sql)->queryOne();
+
+            //$summarySells->asArray()->one();// ->asArray()->one();
+            //\app\models\System::mesprint($summarySellsEx);
+
             return 'Всего: '.number_format($summ, 0, '.', ' ').' р. <br>'
-                    .'Минут: ' . (!empty($summarySells)?$summarySells['minuteSum']:0).'<br>'
-                    .'Доп товары: '.number_format(($summ-(!empty($summarySells)?$summarySells['minuteSum']:0)), 0, '.', ' ').' р.';
+                    .'Минут: ' . (!empty($summarySellsEx)?$summarySellsEx['minuteSum']:0).'<br>'
+                    .'Доп товары: '.number_format(($summ-(!empty($summarySellsEx)?$summarySellsEx['minuteSum']:0)), 0, '.', ' ').' р.';
         },
         'pageSummaryFunc'=>GridView::F_SUM,
         'mergeHeader'=>true,

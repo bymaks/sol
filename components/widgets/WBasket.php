@@ -84,10 +84,10 @@ class WBasket extends \yii\base\Widget
                     <div class="total-money">
                         <!--<div><b>Цена:</b> <span class="money"> р.</span></div>-->
                         <div><b>Скидка:</b> <span class="money text-danger"><?=(!empty($this->order['order']['discont'])?$this->order['order']['discont']:0)?> р.</span></div>
-                        <div><b>Скидка минут:</b> <span class="money text-danger"><?=(!empty($this->order['order']['discontMinute'])?$this->order['order']['discontMinute']:0)?> мин.</span></div>
+                        <div><b>Минут по абонементу:</b> <span class="money text-danger"><?=(!empty($this->order['order']['discontMinute'])?$this->order['order']['discontMinute']:0)?> мин.</span></div>
                         <div class="result"><h4>Итого:</h4> <span class="money"><?=(!empty($this->order['order']['summ'])?$this->order['order']['summ']:0)?> р.</span></div>
                         <div class="text-right">
-                            <button class=" btn-warning btn" id="cancelBasket" onclick="cancelBasket(<?=(!empty($this->order['order']['unique'])?"'".$this->order['order']['unique']."'":"'false'")?>);">Сброисить</button>
+                            <button class=" btn-warning btn" id="cancelBasket" onclick="cancelBasket(<?=(!empty($this->order['order']['unique'])?"'".$this->order['order']['unique']."'":"'false'")?>);">Сброс</button>
                             <button class="btn-success btn" id="createOrder" onclick="createOrder(<?=(!empty($this->order['order']['unique'])?"'".$this->order['order']['unique']."'":"'false'")?>);">Оформить</button>
                         </div>
                         <br>

@@ -16,11 +16,13 @@ $this->title = 'Solarium v1.0.1';
                         <p class="help-block ">Найденые товары:</p>
                     </div>
                     <div class="goods-items">
-                        <?=  app\components\widgets\WSearchItem::widget(['goodId'=>1])?>
-
-                        <?=  app\components\widgets\WSearchItem::widget(['goodId'=>1])?>
-
-                        <?=  app\components\widgets\WSearchItem::widget(['goodId'=>1])?>
+                        <?php
+                        if(!empty(Yii::$app->params['defaultGoods'])){
+                            foreach (Yii::$app->params['defaultGoods'] as $defaultGood){
+                                echo app\components\widgets\WSearchItem::widget(['goodId'=>$defaultGood]);
+                            }
+                        }
+                        ?>
                     </div>
 
                 </div>
