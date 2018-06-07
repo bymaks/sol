@@ -8,6 +8,7 @@ use yii\helpers\ArrayHelper;
 use kartik\editable\Editable;
 use kartik\form\ActiveForm;
 use kartik\widgets\DatePicker;
+use app\models\Goods;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\OrderShopSearch */
@@ -128,8 +129,26 @@ $this->params['breadcrumbs'][] = $this->title;
         'attribute' => 'summSell',
         'label' => 'Сумма',
         'width'=>'30%',
-        'value' => function($model){
-            return number_format($model->summSell, 0, '.', ' ').' р.';
+        'value' => function($model) use ($params){
+            $delta = 0;
+            $good = Goods::find()->where(['id'=>$model->goodId])->one();
+            if(!empty($good)){
+                if(in_array($good->category_id, yii::$app->params['categoryMinut'])){
+                    $summaryDelta = \app\models\OrderItem::find()
+                        ->select(['minuteDelta'=>'(sum(order_shop.discont_minute))*order_item.good_price',])
+                        ->from('order_shop, order_item')
+                        ->where(['between', 'order_shop.create_at',Date('Y-m-d 00:00:00', strtotime($params['dateStart'])), Date('Y-m-d 23:59:59', strtotime($params['dateEnd']))])
+                        ->andWhere(['order_shop.status'=>1, 'order_item.good_id'=>$good->id])
+                        ->andWhere('order_item.order_shop_id = order_shop.id')
+                        ->groupBy('order_shop.id');
+                    if(!empty($params['Shop']['id']) && is_numeric($params['Shop']['id'])){
+                        $summaryDelta->andWhere(['order_shop.shop_id'=>$params['Shop']['id']]);
+                    }
+                    $summaryDelta = Yii::$app->db->createCommand("SELECT sum(uni.minuteDelta) as 'minuteDelta' from (".$summaryDelta->createCommand()->getRawSql().") uni WHERE 1=1")->queryOne();
+                    $delta = (!empty($summaryDelta)?$summaryDelta['minuteDelta']:0);
+                }
+            }
+            return number_format(($model->summSell-$delta), 0, '.', ' ').' р.';
         },
         'pageSummary'=>function ($summary, $data, $widget)  use ($params) {
             $summ =0;
@@ -165,7 +184,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             return 'Всего: '.number_format($summ, 0, '.', ' ').' р. <br>'
                     .'Минут: ' . (!empty($summarySellsEx)?$summarySellsEx['minuteSum']:0).'<br>'
-                    .'Доп товары: '.number_format(($summ-(!empty($summarySellsEx)?$summarySellsEx['minuteSumAll']:0)), 0, '.', ' ').' р.';
+                    .'Доп товары: '.number_format(($summ-(!empty($summarySellsEx)?$summarySellsEx['minuteSum']:0)), 0, '.', ' ').' р.';
         },
         'pageSummaryFunc'=>GridView::F_SUM,
         'mergeHeader'=>true,
