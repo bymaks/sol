@@ -140,6 +140,7 @@ $this->params['breadcrumbs'][] = $this->title;
             $summarySells = \app\models\OrderItem::find()
                 ->select([
                     'minuteSum'=>'(sum(order_shop.minuts) - sum(order_shop.discont_minute))*order_item.good_price',
+                    'minuteSumAll'=>'(sum(order_shop.minuts))*order_item.good_price',
                 ])
                 ->from('order_shop, order_item, goods')
                 ->where(['between', 'order_shop.create_at',Date('Y-m-d 00:00:00', strtotime($params['dateStart'])), Date('Y-m-d 23:59:59', strtotime($params['dateEnd']))])
@@ -150,17 +151,21 @@ $this->params['breadcrumbs'][] = $this->title;
             }
             $summarySells
                 ->andWhere('order_item.order_shop_id = order_shop.id and  goods.id = order_item.good_id')
-                ->andWhere(['goods.category_id'=>Yii::$app->params['categoryMinut']]);
+                ->andWhere(['goods.category_id'=>Yii::$app->params['categoryMinut']])
+                ->groupBy('order_shop.id');
 
             $sql = $summarySells->createCommand()->getRawSql();
-            $summarySellsEx = Yii::$app->db->createCommand($sql)->queryOne();
+            //var_dump($sql);
+            $summarySellsEx = Yii::$app->db->createCommand("SELECT sum(uni.minuteSum) as 'minuteSum', sum(uni.minuteSumAll) as 'minuteSumAll' from (".$sql.") uni WHERE 1=1")->queryOne();
+
 
             //$summarySells->asArray()->one();// ->asArray()->one();
             //\app\models\System::mesprint($summarySellsEx);
+            //\app\models\System::mesprint($summarySellsExAll );
 
             return 'Всего: '.number_format($summ, 0, '.', ' ').' р. <br>'
                     .'Минут: ' . (!empty($summarySellsEx)?$summarySellsEx['minuteSum']:0).'<br>'
-                    .'Доп товары: '.number_format(($summ-(!empty($summarySellsEx)?$summarySellsEx['minuteSum']:0)), 0, '.', ' ').' р.';
+                    .'Доп товары: '.number_format(($summ-(!empty($summarySellsEx)?$summarySellsEx['minuteSumAll']:0)), 0, '.', ' ').' р.';
         },
         'pageSummaryFunc'=>GridView::F_SUM,
         'mergeHeader'=>true,
