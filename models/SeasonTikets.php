@@ -26,6 +26,7 @@ class SeasonTikets extends \yii\db\ActiveRecord
     public $saleCount;
     public $summSell;
     public $stok;
+    public $goodId;
     /**
      * @inheritdoc
      */

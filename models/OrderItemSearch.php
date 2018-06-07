@@ -20,11 +20,12 @@ class OrderItemSearch extends OrderItem
     public $saleCount;
     public $summSell;
     public $stok;
+    public $goodId;
 
     public function rules()
     {
         return [
-            [['id', 'order_shop_id', 'good_id', 'good_count', 'status', 'saleCount', 'summSell', 'stok',], 'integer'],
+            [['id', 'order_shop_id', 'good_id', 'good_count', 'status', 'saleCount', 'goodId','summSell', 'stok',], 'integer'],
             [['good_price', 'commis', 'discont'], 'number'],
             [['goodName'], 'string'],
         ];
@@ -109,15 +110,17 @@ WHERE season_tikets.create_at BETWEEN '2018-05-30 00:00:00.000000' AND '2018-05-
                 'goodName'=>'goods.name',
                 'saleCount'=>'sum(order_item.good_count)',
                 'summSell'=>'sum(order_item.good_price*order_item.good_count)',
-                'stok'=>'goods_stok.good_count',
+                //'stok'=>'goods_stok.good_count',
+                'stok'=>'goods.id',
+                'goodId'=>'goods.id',
             ])
             ->from('order_shop, order_item, goods')
-            ->leftJoin('goods_stok', 'goods_stok.good_id = goods.id ')
+            //->leftJoin('goods_stok', 'goods_stok.good_id = goods.id ')
             ->where(['between', 'order_shop.create_at',Date('Y-m-d 00:00:00', strtotime($params['dateStart'])), Date('Y-m-d 23:59:59', strtotime($params['dateEnd']))])
             ->andWhere(['order_shop.status'=>1])
-            ->andWhere('    order_item.order_shop_id = order_shop.id and  
-		                    goods.id = order_item.good_id and 
-                            goods_stok.shop_id = order_shop.shop_id')
+            ->andWhere('    order_item.order_shop_id = order_shop.id')
+            ->andWhere('goods.id = order_item.good_id')
+            //->andWhere('goods_stok.shop_id = order_shop.shop_id')
             ->groupBy('order_item.good_id');
 
 
@@ -126,6 +129,7 @@ WHERE season_tikets.create_at BETWEEN '2018-05-30 00:00:00.000000' AND '2018-05-
                 'saleCount'=>'count(season_tikets.minute_all)',
                 'summSell'=>'sum(season_tikets.price)',
                 'stok'=>'(season_tikets.status-1000)',
+                'goodId'=>'(season_tikets.status-1000)',
             ])
             ->from('season_tikets, users')
             ->where(['season_tikets.status'=>1])
