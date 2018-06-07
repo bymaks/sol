@@ -172,10 +172,15 @@ $this->params['breadcrumbs'][] = $this->title;
         'attribute' => 'stok',
         'label' => 'Остаток',
         'width'=>'30%',
-        'value' => function($model){
-            $result = number_format($model->stok, 0, '.', ' ').' шт.';
-            if($model->stok==-999){
+        'value' => function($model) use ($params){
+            if($model->goodId==-999){
                 $result = 'Неограничено';
+            }
+            else{
+                $stok = \app\models\GoodsStok::find()->where(['good_id'=>$model->goodId ,'status'=>1])
+                    ->andWhere(((!empty($params['Shop']['id']) && is_numeric(intval($params['Shop']['id'])))?['shop_id'=>$params['Shop']['id']]:[]))
+                    ->sum('good_count');
+                $result = number_format(round($stok), 0, '.', ' ').' шт.';
             }
             return $result;
         },
