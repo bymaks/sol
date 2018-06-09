@@ -69,7 +69,7 @@ class WBasket extends \yii\base\Widget
         ?>
             </div><!--div col-md-6-->
             <div class="col-md-6">
-                <div class="img form_group bgimage">
+                <div class="img form_group <?=empty($seasonHtml)?'bgimage-center':'bgimage'?>">
                     <!--<img class="size-1 img-responsive" src="/images/sert_back.jpg">-->
                     <!--<!-- /input-group -->
                     <?=$seasonHtml?>

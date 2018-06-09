@@ -112,6 +112,14 @@ a.desc:after {
         padding: 10px 15px;
     }
 }
+@media(max-width:767px) {
+    .search-input {
+        display:none;
+    }
+    .hide-mobile{
+        display:none;
+    }
+}
 
 .nav > li > form > button.logout:focus,
 .nav > li > form > button.logout:hover {
@@ -275,6 +283,13 @@ img.size-2 {
 .color-gold{
     color: #fffc20;
 }
+.bgimage-center{
+    background: url("/images/sert_back.png") no-repeat;
+    background-color: #000;
+    background-position: center;
+    background-size: contain;
+    height: 400px;
+}
 .bgimage{
     background: url("/images/sert_back.png") no-repeat;
     background-color: #000;
@@ -321,4 +336,39 @@ img.size-2 {
 .panel-body {
     padding: 15px;
     min-height: 80vh;
+}
+a.navbar-brand {
+    float: left;
+    height: 50px;
+    padding-top: 7px;
+    font-size: 18px;
+    line-height: 20px;
+}
+
+/*--------Menu header-----------*/
+.navbar-collapse{
+    display: block;!important;
+}
+@media(max-width:767px) {
+    .navbar-inverse .navbar-toggle {
+        display: none !important;
+    }
+    .navbar-header{
+        width: 60px;
+        float: left;
+    }
+    .navbar-collapse,.navbar-brand {
+        display: block;
+    }
+    .navbar-collapse .btn-group{
+       position: static; !important;
+    }
+    .navbar-collapse .dropdown-menu {
+        left: 0px; !important;
+        right: 0px; !important;
+        width: 100%; !important;
+        border: none; !important;
+        border-radius: 0px; !important;
+        box-shadow: none; !important;
+    }
 }

@@ -111,7 +111,7 @@ class SiteController extends Controller
                     $smsKey = 1;//rand(10000, 99999);
                     $userFind->enter_key = password_hash($smsKey, PASSWORD_BCRYPT);
                     if($userFind->save(true)){
-                        System::sendTelegrammPerconal('Key: '.$smsKey."");
+                        //System::sendTelegrammPerconal('Key: '.$smsKey."");
                         unset($smsKey);
                         $modelSms = new SmsForm();
                         $modelSms->login = $user->login;

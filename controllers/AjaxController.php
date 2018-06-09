@@ -298,10 +298,25 @@ class AjaxController  extends Controller
         $session = Yii::$app->session->get('order');
         if(!empty($params['certificate'])){
             if($seasonTiket = SeasonTikets::find()->where(['tiket_id'=>$params['certificate'], 'status'=>1])->andWhere(['>','minute_balance',0])->one()){
-                $session['order']['seasonTiket'] = $seasonTiket->id;
-                $session = System::refreshSummaryOrderInfo($session);// сделаем пересчет на всякий слушяай
-                Yii::$app->session->set('order', $session);
-                $result =['status'=>'true', 'message'=>'Добавлен', 'error'=>0, 'html'=>WBasket::widget(['order'=>$session]), ];
+                //проверка что абиком сегодня не пользовались
+                $lastTransaction = $seasonTiket->lastTransaction;
+
+                $flagOneDayUseSeasonTiket = true;
+                if(!empty($lastTransaction)){
+                    $dateLastTransaction = Date('Y-m-d', strtotime($lastTransaction->create_at));
+                    if($dateLastTransaction==Date('Y-m-d')){
+                        $flagOneDayUseSeasonTiket = false;
+                    }
+                }
+                if($flagOneDayUseSeasonTiket){
+                    $session['order']['seasonTiket'] = $seasonTiket->id;
+                    $session = System::refreshSummaryOrderInfo($session);// сделаем пересчет на всякий слушяай
+                    Yii::$app->session->set('order', $session);
+                    $result =['status'=>'true', 'message'=>'Добавлен', 'error'=>0, 'html'=>WBasket::widget(['order'=>$session]), ];
+                }
+                else{
+                    $result =['status'=>'false', 'message'=>'Абонемент сегодня уже использовали', 'error'=>6002, 'html'=>'', ];
+                }
             }
             else{
                 $result =['status'=>'false', 'message'=>'Не найдено', 'error'=>6001, 'html'=>'', ];
