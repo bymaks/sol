@@ -84,4 +84,9 @@ class SeasonTikets extends \yii\db\ActiveRecord
     {
         return $this->hasMany(SeasonTiketTransaction::className(), ['season_tiket_id' => 'id']);
     }
+
+    public function getLastTransaction()
+    {//последняя оплата чувака
+        return $this->hasOne(SeasonTiketTransaction::className(), ['season_tiket_id' => 'id'])->where(['status'=>1])->orderBy(['id'=>SORT_DESC]);
+    }
 }
