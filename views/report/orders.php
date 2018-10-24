@@ -185,6 +185,25 @@ $this->params['breadcrumbs'][] = $this->title;
         'format'=>'html',
     ];
     $gridColumns[] =  [
+        'attribute'=>'discontItem',
+        'label'=>'Скидка',
+        'width'=>'10%',
+        'value' => function($model){
+            $result = false;
+            if(\app\models\OrderItem::find()->where(['order_shop_id'=>$model->id, 'status'=>1])->sum('discont')>0){
+                $result = true;
+            }
+            return $result ? Html::tag('span', 'Есть', ['data-label'=>'Status', 'class'=>'text-success']) :  Html::tag('span', 'Нет', ['data-label'=>'Status', 'class'=>'text-danger']);
+        },
+        'filterType'=>GridView::FILTER_SELECT2,
+        'filter'=>$itemsStatusDel,
+        'filterWidgetOptions'=>[
+            'pluginOptions'=>['allowClear'=>true],
+        ],
+        'filterInputOptions'=>['placeholder'=>'Скидка'],
+        'format'=>'html',
+    ];
+    $gridColumns[] =  [
         'attribute'=>'status',
         'label'=>'Статус',
         'width'=>'10%',

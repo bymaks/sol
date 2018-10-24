@@ -30,7 +30,7 @@ class AjaxController  extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['search-goods','add-good', 'remove-good', 'create-order', 'cancel-basket', 'add-season-tiket', 'search-input', 'set-img-main', 'del-image'],
+                        'actions' => ['search-goods','add-good', 'add-discount', 'remove-good', 'create-order', 'cancel-basket', 'add-season-tiket', 'search-input', 'set-img-main', 'del-image'],
                         'allow' => true,
                         'roles' => ['Seller',],
                     ],
@@ -148,6 +148,7 @@ class AjaxController  extends Controller
                                 $session['order']['items'][$good->id]= [
                                     'count'=>1,
                                     'goodId'=>$good->id,
+                                    'discount'=>0,
                                 ];
                             }
                             //пересчитываем заказ
@@ -169,6 +170,31 @@ class AjaxController  extends Controller
             }
             else{
                 $result =['status'=>'false', 'message'=>'Товар не найден', 'error'=>2002, 'html'=>'', ];
+            }
+        }
+        return json_encode($result);
+    }
+
+    public function actionAddDiscount(){
+        $params = Yii::$app->request->post();
+        $result =['status'=>'false', 'message'=>'Не найдено', 'error'=>2001, 'html'=>'', ];
+        if(!empty($params['goodId']) && !empty($params['discount'])){
+            //найти товар посчитать количество
+            ////количиство добавленого не больше чем есть на складе
+            //найти в сессии и добавить
+            $session = Yii::$app->session->get('order');
+
+            $flagAdd = true;
+            if(!empty($session['order']['items'][$params['goodId']])){
+                //добавляем в сессию скидку
+                $session['order']['items'][$params['goodId']]['discount'] =$params['discount'];
+                //пересчитываем заказ
+                $session = System::refreshSummaryOrderInfo($session);
+                Yii::$app->session->set('order',$session);
+                $result =['status'=>'true', 'message'=>'Добавлен', 'error'=>0, 'html'=>WBasket::widget(['order'=>$session]), ];
+            }
+            else{
+                $result =['status'=>'false', 'message'=>'Товара для скидки нет', 'error'=>4007, 'html'=>'', ];
             }
         }
         return json_encode($result);
@@ -245,7 +271,7 @@ class AjaxController  extends Controller
                         $orderItem->good_count = $item['count'];
                         $orderItem->good_price = $goods->price;
                         $orderItem->commis = 0;
-                        $orderItem->discont =0;
+                        $orderItem->discont =(!empty($item['discount'])?$item['discount']:0);
                         $orderItem->status = 1;
                         if(!$orderItem->save(true)){
                             $flagItem = false;

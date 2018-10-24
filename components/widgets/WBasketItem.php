@@ -15,6 +15,7 @@ class WBasketItem extends \yii\base\Widget
 
     public $goodId=NULL;
     public $count = 0;
+    public $discount=0;
 
     public function init() {
         parent::init();
@@ -23,6 +24,10 @@ class WBasketItem extends \yii\base\Widget
         }
         if (empty($this->count)) {
             $this->count = 0;
+        }
+
+        if (empty($this->discount)) {
+            $this->discount = 0;
         }
     }
 
@@ -48,10 +53,24 @@ class WBasketItem extends \yii\base\Widget
                         <div class="small text-muted"><?=((!empty($good->category))? $good->category->name:'')?> / <?=((!empty($good->vendor_code))? $good->vendor_code:'н.д.')?></div>
                         <div class="small text-muted">Цена: <?=$good->price .'р. х '.$this->count?></div>
                     </div>
+                    <div class="action pull-right discont-list" title="" >
+                        <?=Html::dropDownList('discont-basket-item',$this->discount, $this->genDiscountValue(), ['class'=>'form-control js-discont-list-item', 'data-good-id'=>$good->id])?>
+
+                    </div>
                     <div class="action pull-right" title="Удалить" onclick="removeItemFromBasket(<?=$good->id?>);"><i class="glyphicon glyphicon glyphicon-remove text-danger"></i> </div>
                 </div>
                 <?php
             }
         }
+    }
+
+    private function genDiscountValue(){
+        $min = 1;
+        $result =[0=>'0%'];
+        while ($min<=Yii::$app->params['maxDiscount']){
+            $result[$min]= $min.'%';
+            $min++;
+        }
+        return $result;
     }
 }

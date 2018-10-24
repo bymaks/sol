@@ -143,20 +143,22 @@ class System extends \yii\db\ActiveRecord
                         $good = Goods::find()->where(['id'=>$item['goodId']])->one();
                         if(!empty($good)){
                             //$summ += $good->price*$item['count'];
+                            $discontItem = (!empty($item['discount'])?$item['discount']:0);
                             if(in_array($good->category_id, Yii::$app->params['categoryMinut'])){
                                 $minuts += $item['count'];
                                 //считаем минуты минус минуты с абонемента
                                 if(!empty($seasonTiket)){
-                                    $summ += $good->price*( (($item['count']-$seasonTiket->minute_balance)<0?0:$item['count']-$seasonTiket->minute_balance));
+                                    $summ += $good->price*(1-($discontItem/100))*( (($item['count']-$seasonTiket->minute_balance)<0?0:$item['count']-$seasonTiket->minute_balance));
                                     $discontMinute += $item['count'] - ( ( ($item['count']-$seasonTiket->minute_balance)<0?0:$item['count']-$seasonTiket->minute_balance));
                                 }
                                 else{
-                                    $summ += $good->price*$item['count'];
+                                    $summ += $good->price*(1-($discontItem/100))*$item['count'];
                                 }
                             }
                             else{
-                                $summ += $good->price*$item['count'];
+                                $summ += $good->price*(1-($discontItem/100))*$item['count'];
                             }
+                            unset($discontItem);
                         }
                     }
                 }
