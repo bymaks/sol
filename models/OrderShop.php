@@ -26,6 +26,7 @@ use Yii;
  */
 class OrderShop extends \yii\db\ActiveRecord
 {
+    public $discontItem;
     /**
      * @inheritdoc
      */
@@ -43,6 +44,7 @@ class OrderShop extends \yii\db\ActiveRecord
             [['shop_id', ], 'required'],
             [['shop_id', 'create_by_user', 'season_tikets_id', 'minuts', 'discont_minute', 'status'], 'integer'],
             [['create_at'], 'safe'],
+            [['discontItem'], 'safe'],
             [['create_at'], 'default', 'value'=>(empty($this->create_at)?Date('Y-m-d H:i:s'):$this->create_at)],
             [['create_by_user'], 'default', 'value'=>(empty($this->create_by_user)?Yii::$app->user->id:$this->create_by_user)],
             [['discont','summ'], 'number'],
@@ -70,6 +72,7 @@ class OrderShop extends \yii\db\ActiveRecord
             'discont_minute' => 'Скидка',
             'comment' => 'Комментарий',
             'status' => 'Активность',
+            'discontItem' => 'Скидка на товар заказа',
         ];
     }
 

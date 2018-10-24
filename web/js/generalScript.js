@@ -390,3 +390,32 @@ $(document).on("change", "#ShopId", function(e) {
     $('#form-vertical').submit();
     console.log('send_form');
 });
+
+$(document).on("change", '.js-discont-list-item', function (e) {
+    //var data = $(this).data();
+    //console.log(data.goodId);
+    //console.log($(this).val());
+    var data = {};
+    data['goodId'] = $(this).data('goodId')
+    data['discount'] = $(this).val();
+    $.ajax({
+        url: '/ajax/add-discount',
+        type: "post",
+        data: data,
+        success: function(response) {
+            loader('hide');
+
+            var result = JSON.parse(response);
+            if(result.status=='true' && result.error ==0){
+                $('.basket_result').empty();
+                $('.basket_result').html(result.html);
+                alert_messages(result.message,1,false);
+            }
+            else{
+                alert_messages(result.message,2,false);
+            }
+            console.log('success');
+        }
+    });
+
+});

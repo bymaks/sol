@@ -6,12 +6,14 @@ use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\models\OrderShop;
+use yii\validators\EmailValidator;
 
 /**
  * OrderShopSearch represents the model behind the search form of `app\models\OrderShop`.
  */
 class OrderShopSearch extends OrderShop
 {
+    public $discontItem;
     /**
      * @inheritdoc
      */
@@ -19,7 +21,7 @@ class OrderShopSearch extends OrderShop
     {
         return [
             [['id', 'shop_id', 'create_by_user', 'season_tikets_id', 'minuts', 'discont_minute', 'status'], 'integer'],
-            [['create_at', 'comment'], 'safe'],
+            [['create_at', 'comment', 'discontItem'], 'safe'],
             [['summ', 'discont'], 'number'],
         ];
     }
@@ -84,6 +86,31 @@ class OrderShopSearch extends OrderShop
         ]);
 
         $query->andFilterWhere(['like', 'comment', $this->comment]);
+
+
+        //после установки всех фильтров по заказу
+
+        if(!empty($this->discontItem)){
+//            SELECT order_item.order_shop_id
+//            FROM `order_item`, (--текущий запрос) ord
+//            WHERE order_item.discont>0 and order_item.status=1 AND order_item.order_shop_id = ord.id
+//            GROUP by order_item.order_shop_id
+            $ordersId = OrderItem::find()
+                //->select(['orderIds'=>'order_item.order_shop_id'])
+                ->select('order_item.order_shop_id')
+                ->from('order_item, ('.$query->createCommand()->getRawSql().') ord' )
+                ->where(['>', 'order_item.discont', 0])
+                ->andWhere(['order_item.status'=>1])
+                ->andWhere('order_item.order_shop_id = ord.id')
+                ->groupBy(['order_item.order_shop_id'])->asArray()->all();
+            if(!empty($ordersId)){
+                $query->andWhere(['id' => array_column($ordersId, 'order_shop_id')]);
+            }
+
+
+        }
+        //var_dump($query->createCommand()->getRawSql());die();
+
 
         return $dataProvider;
     }

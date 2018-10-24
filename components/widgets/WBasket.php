@@ -41,7 +41,7 @@ class WBasket extends \yii\base\Widget
                 <?php
                 if(!empty($this->order['order']['items'])){
                     foreach ($this->order['order']['items'] as $item){
-                        echo WBasketItem::widget(['goodId'=>$item['goodId'], 'count'=>$item['count']]);
+                        echo WBasketItem::widget(['goodId'=>$item['goodId'], 'count'=>$item['count'], 'discount'=>(!empty($item['discount'])?$item['discount']:0) ]);
                     }
                 }
                 ?>
