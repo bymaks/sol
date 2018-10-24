@@ -178,7 +178,7 @@ class AjaxController  extends Controller
     public function actionAddDiscount(){
         $params = Yii::$app->request->post();
         $result =['status'=>'false', 'message'=>'Не найдено', 'error'=>2001, 'html'=>'', ];
-        if(!empty($params['goodId']) && !empty($params['discount'])){
+        if(!empty($params['goodId']) && isset($params['discount'])){
             //найти товар посчитать количество
             ////количиство добавленого не больше чем есть на складе
             //найти в сессии и добавить
