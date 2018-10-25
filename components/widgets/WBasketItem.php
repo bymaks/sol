@@ -65,11 +65,10 @@ class WBasketItem extends \yii\base\Widget
     }
 
     private function genDiscountValue(){
-        $min = 1;
-        $result =[0=>'0%'];
+        $min = 0;
         while ($min<=Yii::$app->params['maxDiscount']){
             $result[$min]= $min.'%';
-            $min++;
+            $min = $min+Yii::$app->params['deltaDiscount'];
         }
         return $result;
     }
