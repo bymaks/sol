@@ -109,7 +109,7 @@ WHERE season_tikets.create_at BETWEEN '2018-05-30 00:00:00.000000' AND '2018-05-
             ->select([
                 'goodName'=>'goods.name',
                 'saleCount'=>'sum(order_item.good_count)',
-                'summSell'=>'sum(order_item.good_price*order_item.good_count)',
+                'summSell'=>'sum(order_item.good_price * (1-(order_item.discont/100)) *order_item.good_count)',
                 //'stok'=>'goods_stok.good_count',
                 'stok'=>'goods.id',
                 'goodId'=>'goods.id',
