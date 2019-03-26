@@ -4,7 +4,7 @@ namespace app\components\widgets;
  * Created by PhpStorm.
  * User: 34max
  * Date: 09.05.2018
- * Time: 20:18
+ * Time: 20:18:00
  */
 use app\models\System;
 use Yii;
